@@ -118,16 +118,6 @@ function getSubcourt(courtID: BigInt, courtAddress: Address): KlerosLiquid__getS
   return contract.getSubcourt(courtID)
 }
 
-// function getPeriod(period: BigInt): Period {
-//   let periodObj: Period;
-//   switch (period) {
-//     case 0:
-//       periodObj = Period.
-//       break;
-//   }
-//   return periodObj
-// }
-
 function getOrCreateKlerosStat(): KlerosStat {
   let klerosStat = KlerosStat.load('ID')
   if (klerosStat == null) {
