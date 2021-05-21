@@ -47,4 +47,12 @@ dataSources:
           handler: handleCreateSubcourt
         - function: executeRuling(uint256)
           handler: handleExecuteRuling
+        - function: changeSubcourtAlpha(uint96,uint256)
+          handler: handleChangeSubcourtAlpha
+        - function: changeSubcourtJurorFee(uint96,uint256)
+          handler: handleChangeSubcourtJurorFee
+        - function: changeSubcourtJurorsForJump(uint96,uint256)
+          handler: handleChangeSubcourtJurorsForJump
+        - function: changeSubcourtTimesPerPeriod(uint96,uint256[4])
+          handler: handleChangeSubcourtTimesPerPeriod
       file: ./src/mapping.ts

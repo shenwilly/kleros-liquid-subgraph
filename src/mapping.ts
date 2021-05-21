@@ -14,6 +14,10 @@ import {
   KlerosLiquid__disputesResult,
   KlerosLiquid__courtsResult,
   KlerosLiquid__getSubcourtResult,
+  ChangeSubcourtAlphaCall,
+  ChangeSubcourtJurorFeeCall,
+  ChangeSubcourtJurorsForJumpCall,
+  ChangeSubcourtTimesPerPeriodCall,
 } from "../generated/KlerosLiquid/KlerosLiquid"
 import { Court, Dispute, KlerosStat, Juror, JurorStake, Arbitrable  } from "../generated/schema"
 
@@ -93,6 +97,30 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
     dispute.ruled = true
     dispute.save()
   }
+}
+
+export function handleChangeSubcourtAlpha(call: ChangeSubcourtAlphaCall): void {
+  let subcourtID = call.inputs._subcourtID.toString()
+  let subcourt = getOrCreateSubCourt(subcourtID, call.to)
+  subcourt.alpha = call.inputs._alpha
+}
+
+export function handleChangeSubcourtJurorFee(call: ChangeSubcourtJurorFeeCall): void {
+  let subcourtID = call.inputs._subcourtID.toString()
+  let subcourt = getOrCreateSubCourt(subcourtID, call.to)
+  subcourt.feeForJuror = call.inputs._feeForJuror
+}
+
+export function handleChangeSubcourtJurorsForJump(call: ChangeSubcourtJurorsForJumpCall): void {
+  let subcourtID = call.inputs._subcourtID.toString()
+  let subcourt = getOrCreateSubCourt(subcourtID, call.to)
+  subcourt.jurorsForCourtJump = call.inputs._jurorsForCourtJump
+}
+
+export function handleChangeSubcourtTimesPerPeriod(call: ChangeSubcourtTimesPerPeriodCall): void {
+  let subcourtID = call.inputs._subcourtID.toString()
+  let subcourt = getOrCreateSubCourt(subcourtID, call.to)
+  subcourt.timesPerPeriod = call.inputs._timesPerPeriod
 }
 
 function getDisputeObj(disputeID: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
