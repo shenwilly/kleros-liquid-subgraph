@@ -5,6 +5,7 @@ type KlerosStat @entity {
   uniqueJurorCount: BigInt!
   activeJurorCount: BigInt!
   uniqueArbitrableCount: BigInt!
+  phase: Phase
 }
 
 type Court @entity {
@@ -66,4 +67,10 @@ enum Period {
   Vote,
   Appeal,
   Execution
+}
+
+enum Phase {
+  Staking,
+  Generating,
+  Drawing
 }

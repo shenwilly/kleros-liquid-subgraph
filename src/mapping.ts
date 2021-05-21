@@ -16,7 +16,12 @@ import {
 } from "../generated/KlerosLiquid/KlerosLiquid"
 import { Court, Dispute, KlerosStat, Juror, JurorStake, Arbitrable  } from "../generated/schema"
 
-export function handleNewPhase(event: NewPhase): void {}
+export function handleNewPhase(event: NewPhase): void {
+  let phase = i32ToPhase(event.params._phase)
+  let klerosStat = getOrCreateKlerosStat()
+  klerosStat.phase = phase
+  klerosStat.save()
+}
 
 export function handleNewPeriod(event: NewPeriod): void {
   let disputeID = event.params._disputeID.toString()
@@ -280,4 +285,22 @@ function i32ToPeriod(periodNum: i32): string {
       break;
   }
   return period;
+}
+
+function i32ToPhase(phaseNum: i32): string {
+  let phase: string
+  switch (phaseNum) {
+    case 0:
+      phase = 'Staking'
+      break;
+    case 1:
+      phase = 'Generating'
+      break;
+    case 2:
+      phase = 'Drawing'
+      break;
+    default:
+      break;
+  }
+  return phase;
 }
