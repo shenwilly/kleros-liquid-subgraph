@@ -189,13 +189,13 @@ export class Court extends Entity {
     this.set("timesPerPeriod", Value.fromBigIntArray(value));
   }
 
-  get children(): Array<BigInt> {
+  get children(): Array<string> {
     let value = this.get("children");
-    return value.toBigIntArray();
+    return value.toStringArray();
   }
 
-  set children(value: Array<BigInt>) {
-    this.set("children", Value.fromBigIntArray(value));
+  set children(value: Array<string>) {
+    this.set("children", Value.fromStringArray(value));
   }
 
   get disputeCount(): BigInt {

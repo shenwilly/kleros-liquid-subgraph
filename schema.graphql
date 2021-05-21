@@ -18,7 +18,7 @@ type Court @entity {
   feeForJuror: BigInt!
   jurorsForCourtJump: BigInt!
   timesPerPeriod: [BigInt!]!
-  children: [BigInt!]!
+  children: [Court!]!
 
   disputeCount: BigInt!
   policy: String

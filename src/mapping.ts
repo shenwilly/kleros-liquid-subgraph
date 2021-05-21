@@ -143,8 +143,13 @@ function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
 
     let parentID = courtObject.value0
     if (parentID != BigInt.fromString(courtID)) {
-      let parent = getOrCreateSubCourt(parentID.toString(), klerosAddress)
-      court.parent = parent.id
+      let parentCourt = getOrCreateSubCourt(parentID.toString(), klerosAddress)
+      court.parent = parentCourt.id
+
+      let parentCourtChildren = parentCourt.children
+      parentCourtChildren.push(court.id)
+      parentCourt.children = parentCourtChildren
+      parentCourt.save()
     }
     court.hiddenVotes = courtObject.value1
     court.minStake = courtObject.value2
@@ -152,7 +157,7 @@ function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
     court.feeForJuror = courtObject.value4
     court.jurorsForCourtJump = courtObject.value5
     court.disputeCount = BigInt.fromI32(0)
-    court.children = subCourtObj.value0
+    court.children = []
     court.timesPerPeriod = subCourtObj.value1
     court.save()
   }
