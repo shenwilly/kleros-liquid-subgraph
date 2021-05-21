@@ -59,6 +59,24 @@ export class KlerosStat extends Entity {
   set disputeCount(value: BigInt) {
     this.set("disputeCount", Value.fromBigInt(value));
   }
+
+  get uniqueJurorCount(): BigInt {
+    let value = this.get("uniqueJurorCount");
+    return value.toBigInt();
+  }
+
+  set uniqueJurorCount(value: BigInt) {
+    this.set("uniqueJurorCount", Value.fromBigInt(value));
+  }
+
+  get activeJurorCount(): BigInt {
+    let value = this.get("activeJurorCount");
+    return value.toBigInt();
+  }
+
+  set activeJurorCount(value: BigInt) {
+    this.set("activeJurorCount", Value.fromBigInt(value));
+  }
 }
 
 export class Court extends Entity {
@@ -348,6 +366,109 @@ export class Juror extends Entity {
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
+
+  get subCourts(): Array<string> {
+    let value = this.get("subCourts");
+    return value.toStringArray();
+  }
+
+  set subCourts(value: Array<string>) {
+    this.set("subCourts", Value.fromStringArray(value));
+  }
+
+  get stakedToken(): BigInt {
+    let value = this.get("stakedToken");
+    return value.toBigInt();
+  }
+
+  set stakedToken(value: BigInt) {
+    this.set("stakedToken", Value.fromBigInt(value));
+  }
+
+  get lockedToken(): BigInt {
+    let value = this.get("lockedToken");
+    return value.toBigInt();
+  }
+
+  set lockedToken(value: BigInt) {
+    this.set("lockedToken", Value.fromBigInt(value));
+  }
+
+  get jurorStakes(): Array<string> {
+    let value = this.get("jurorStakes");
+    return value.toStringArray();
+  }
+
+  set jurorStakes(value: Array<string>) {
+    this.set("jurorStakes", Value.fromStringArray(value));
+  }
+}
+
+export class JurorStake extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save JurorStake entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save JurorStake entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("JurorStake", id.toString(), this);
+  }
+
+  static load(id: string): JurorStake | null {
+    return store.get("JurorStake", id) as JurorStake | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get juror(): string {
+    let value = this.get("juror");
+    return value.toString();
+  }
+
+  set juror(value: string) {
+    this.set("juror", Value.fromString(value));
+  }
+
+  get subcourt(): string {
+    let value = this.get("subcourt");
+    return value.toString();
+  }
+
+  set subcourt(value: string) {
+    this.set("subcourt", Value.fromString(value));
+  }
+
+  get stakedToken(): BigInt {
+    let value = this.get("stakedToken");
+    return value.toBigInt();
+  }
+
+  set stakedToken(value: BigInt) {
+    this.set("stakedToken", Value.fromBigInt(value));
+  }
+
+  get lockedToken(): BigInt {
+    let value = this.get("lockedToken");
+    return value.toBigInt();
+  }
+
+  set lockedToken(value: BigInt) {
+    this.set("lockedToken", Value.fromBigInt(value));
+  }
 }
 
 export class Arbitrable extends Entity {
@@ -378,14 +499,5 @@ export class Arbitrable extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
-  }
-
-  get address(): Bytes {
-    let value = this.get("address");
-    return value.toBytes();
-  }
-
-  set address(value: Bytes) {
-    this.set("address", Value.fromBytes(value));
   }
 }

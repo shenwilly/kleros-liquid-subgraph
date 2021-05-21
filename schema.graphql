@@ -2,46 +2,58 @@ type KlerosStat @entity {
   id: ID!
   courtCount: BigInt!
   disputeCount: BigInt!
+  uniqueJurorCount: BigInt!
+  activeJurorCount: BigInt!
 }
 
 type Court @entity {
   id: ID!
 
-  subcourtID: BigInt! # uint256
-  parent: Court # uint256
+  subcourtID: BigInt!
+  parent: Court
 
   hiddenVotes: Boolean!
-  minStake: BigInt! #uint256
-  alpha: BigInt! #uint256
-  feeForJuror: BigInt! #uint256
-  jurorsForCourtJump: BigInt! #uint256
+  minStake: BigInt!
+  alpha: BigInt!
+  feeForJuror: BigInt!
+  jurorsForCourtJump: BigInt!
   timesPerPeriod: [BigInt!]!
   children: [BigInt!]!
 
-  disputeCount: BigInt! # uint256
-  policy: String # String
+  disputeCount: BigInt!
+  policy: String
 }
 
 type Dispute @entity {
   id: ID!
-  disputeID: BigInt! # uint256
+  disputeID: BigInt!
   arbitrable: Bytes! # address
 
-  subcourt: Court! # uint256
-  numberOfChoices: BigInt! # uint256
+  subcourt: Court!
+  numberOfChoices: BigInt!
   period: Int! # Enum
-  lastPeriodChange: BigInt! # uint256
-  drawsInRound: BigInt! # uint256
-  commitsInRound: BigInt! # uint256
-  ruled: Boolean! # Boolean
+  lastPeriodChange: BigInt!
+  drawsInRound: BigInt!
+  commitsInRound: BigInt!
+  ruled: Boolean!
 }
 
 type Juror @entity {
   id: ID!
-  
+  subCourts: [Court!]!
+  stakedToken: BigInt!
+  lockedToken: BigInt!
+  jurorStakes: [JurorStake!] ! @derivedFrom(field: "juror")
+}
+
+type JurorStake @entity {
+  id: ID!
+  juror: Juror!
+  subcourt: Court!
+  stakedToken: BigInt!
+  lockedToken: BigInt!
 }
 
 type Arbitrable @entity {
   id: ID!
-  address: Bytes! # address
 }

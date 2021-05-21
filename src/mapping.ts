@@ -14,7 +14,7 @@ import {
   KlerosLiquid__courtsResult,
   KlerosLiquid__getSubcourtResult,
 } from "../generated/KlerosLiquid/KlerosLiquid"
-import { Court, Dispute, KlerosStat  } from "../generated/schema"
+import { Court, Dispute, KlerosStat, Juror, JurorStake  } from "../generated/schema"
 
 export function handleNewPhase(event: NewPhase): void {}
 
@@ -51,7 +51,7 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   dispute.arbitrable = event.params._arbitrable
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
-  let subcourt = getOrCreateSubCourt(disputeObj.value0, event.address)
+  let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), event.address)
   dispute.subcourt = subcourt.id
   dispute.numberOfChoices = disputeObj.value2
   dispute.period = disputeObj.value3
@@ -67,7 +67,7 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   klerosStat.save()
 
   let courtID = dispute.subcourt
-  let court = getOrCreateSubCourt(BigInt.fromString(courtID), event.address)
+  let court = getOrCreateSubCourt(courtID, event.address)
   court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
   court.save()
 }
@@ -89,7 +89,7 @@ export function handleAppealDecision(event: AppealDecision): void {
 export function handleCreateSubcourt(call: CreateSubcourtCall): void {
   let klerosStat = getOrCreateKlerosStat()
 
-  getOrCreateSubCourt(klerosStat.courtCount, call.to)
+  getOrCreateSubCourt(klerosStat.courtCount.toString(), call.to)
 
   klerosStat.courtCount = klerosStat.courtCount.plus(BigInt.fromI32(1))
   klerosStat.save();
@@ -126,24 +126,26 @@ function getOrCreateKlerosStat(): KlerosStat {
     klerosStat = new KlerosStat('ID')
     klerosStat.courtCount = BigInt.fromI32(1) //discount general court #0
     klerosStat.disputeCount = BigInt.fromI32(0)
+    klerosStat.uniqueJurorCount = BigInt.fromI32(0)
+    klerosStat.activeJurorCount = BigInt.fromI32(0)
     klerosStat.save()
   }
   return klerosStat!
 }
 
-function getOrCreateSubCourt(courtID: BigInt, klerosAddress: Address): Court {
-  let court = Court.load(courtID.toString())
+function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
+  let court = Court.load(courtID)
   if (court == null) {
-    court = new Court(courtID.toString())
+    court = new Court(courtID)
+    
+    let courtObject = getCourtObj(BigInt.fromString(courtID), klerosAddress)
+    let subCourtObj = getSubcourt(BigInt.fromString(courtID), klerosAddress)
 
-    let courtObject = getCourtObj(courtID, klerosAddress)
-    let subCourtObj = getSubcourt(courtID, klerosAddress)
-
-    court.subcourtID = courtID
+    court.subcourtID = BigInt.fromString(courtID)
 
     let parentID = courtObject.value0
-    if (parentID != courtID) {
-      let parent = getOrCreateSubCourt(parentID, klerosAddress)
+    if (parentID != BigInt.fromString(courtID)) {
+      let parent = getOrCreateSubCourt(parentID.toString(), klerosAddress)
       court.parent = parent.id
     }
     court.hiddenVotes = courtObject.value1
@@ -157,6 +159,8 @@ function getOrCreateSubCourt(courtID: BigInt, klerosAddress: Address): Court {
     court.save()
   }
   return court!
+}
+
 function getOrCreateJuror(jurorID: string): Juror {
   let juror = Juror.load(jurorID)
   if (juror == null) {
