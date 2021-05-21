@@ -10,6 +10,7 @@ import {
   AppealPossible,
   AppealDecision,
   CreateSubcourtCall,
+  ExecuteRulingCall,
   KlerosLiquid__disputesResult,
   KlerosLiquid__courtsResult,
   KlerosLiquid__getSubcourtResult,
@@ -65,7 +66,7 @@ export function handleAppealPossible(event: AppealPossible): void {}
 
 export function handleAppealDecision(event: AppealDecision): void {
   let disputeID = event.params._disputeID.toString()
-  let dispute = Dispute.load(disputeID)
+  let dispute = getOrCreateDispute(disputeID, event.address)
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
   dispute.lastPeriodChange = disputeObj.value4
@@ -82,6 +83,16 @@ export function handleCreateSubcourt(call: CreateSubcourtCall): void {
 
   klerosStat.courtCount = klerosStat.courtCount.plus(BigInt.fromI32(1))
   klerosStat.save();
+}
+
+export function handleExecuteRuling(call: ExecuteRulingCall): void {
+  let disputeID = call.inputs._disputeID.toString()
+  let dispute = getOrCreateDispute(disputeID, call.to)
+
+  if (dispute.period == 'Execution') {
+    dispute.ruled = true
+    dispute.save()
+  }
 }
 
 function getDisputeObj(disputeID: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
