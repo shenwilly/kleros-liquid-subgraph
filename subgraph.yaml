@@ -1,0 +1,44 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: mainnet
+    source:
+      address: "0x988b3A538b618C7A603e1c11Ab82Cd16dbE28069"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - NewPhase
+        - NewPeriod
+        - StakeSet
+        - Draw
+        - TokenAndETHShift
+        - DisputeCreation
+        - AppealPossible
+        - AppealDecision
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: NewPhase(uint8)
+          handler: handleNewPhase
+        - event: NewPeriod(indexed uint256,uint8)
+          handler: handleNewPeriod
+        - event: StakeSet(indexed address,uint256,uint128,uint256)
+          handler: handleStakeSet
+        - event: Draw(indexed address,indexed uint256,uint256,uint256)
+          handler: handleDraw
+        - event: TokenAndETHShift(indexed address,indexed uint256,int256,int256)
+          handler: handleTokenAndETHShift
+        - event: DisputeCreation(indexed uint256,indexed address)
+          handler: handleDisputeCreation
+        - event: AppealPossible(indexed uint256,indexed address)
+          handler: handleAppealPossible
+        - event: AppealDecision(indexed uint256,indexed address)
+          handler: handleAppealDecision
+      file: ./src/mapping.ts
