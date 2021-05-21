@@ -58,36 +58,7 @@ export function handleDraw(event: Draw): void {}
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {}
 
 export function handleDisputeCreation(event: DisputeCreation): void {
-  let dispute = new Dispute(event.params._disputeID.toString())
-
-  dispute.disputeID = event.params._disputeID
-  dispute.arbitrable = event.params._arbitrable
-
-  let disputeObj = getDisputeObj(event.params._disputeID, event.address);
-  let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), event.address)
-  dispute.subcourt = subcourt.id
-  dispute.numberOfChoices = disputeObj.value2
-  dispute.period = i32ToPeriod(disputeObj.value3)
-  dispute.lastPeriodChange = disputeObj.value4
-  dispute.drawsInRound = disputeObj.value5;
-  dispute.commitsInRound = disputeObj.value6;
-  dispute.ruled = disputeObj.value7;
-
-  dispute.save()
-
-  let klerosStat = getOrCreateKlerosStat()
-  klerosStat.disputeCount = klerosStat.disputeCount.plus(BigInt.fromI32(1))
-  klerosStat.save()
-
-  let courtID = dispute.subcourt
-  let court = getOrCreateSubCourt(courtID, event.address)
-  court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
-  court.save()
-
-  let arbitrableID = dispute.arbitrable.toHexString()
-  let arbitrable = getOrCreateArbitrable(arbitrableID)
-  arbitrable.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
-  arbitrable.save()
+  getOrCreateDispute(event.params._disputeID.toString(), event.address)
 }
 
 export function handleAppealPossible(event: AppealPossible): void {}
@@ -135,7 +106,7 @@ function getOrCreateKlerosStat(): KlerosStat {
     klerosStat.courtCount = BigInt.fromI32(1) //discount general court #0
     klerosStat.disputeCount = BigInt.fromI32(0)
     klerosStat.uniqueJurorCount = BigInt.fromI32(0)
-    klerosStat.activeJurorCount = BigInt.fromI32(0)
+    klerosStat.activeJurorCount = BigInt.fromI32(0) // TODO: impl
     klerosStat.uniqueArbitrableCount = BigInt.fromI32(0)
     klerosStat.save()
   }
@@ -175,6 +146,43 @@ function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
   return court!
 }
 
+function getOrCreateDispute(disputeID: string, klerosAddress: Address): Dispute {
+  let dispute = Dispute.load(disputeID)
+  if (dispute == null) {
+    dispute = new Dispute(disputeID)
+
+    dispute.disputeID = BigInt.fromString(disputeID)
+
+    let disputeObj = getDisputeObj(BigInt.fromString(disputeID), klerosAddress);
+    let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), klerosAddress)
+    dispute.subcourt = subcourt.id
+    dispute.arbitrable = disputeObj.value1
+    dispute.numberOfChoices = disputeObj.value2
+    dispute.period = i32ToPeriod(disputeObj.value3)
+    dispute.lastPeriodChange = disputeObj.value4
+    dispute.drawsInRound = disputeObj.value5;
+    dispute.commitsInRound = disputeObj.value6;
+    dispute.ruled = disputeObj.value7;
+
+    let klerosStat = getOrCreateKlerosStat()
+    klerosStat.disputeCount = klerosStat.disputeCount.plus(BigInt.fromI32(1))
+    klerosStat.save()
+
+    let courtID = dispute.subcourt
+    let court = getOrCreateSubCourt(courtID, klerosAddress)
+    court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
+    court.save()
+
+    let arbitrableID = dispute.arbitrable.toHexString()
+    let arbitrable = getOrCreateArbitrable(arbitrableID)
+    arbitrable.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
+    arbitrable.save()
+
+    dispute.save()
+  }
+  return dispute!
+}
+
 function getOrCreateJuror(jurorID: string): Juror {
   let juror = Juror.load(jurorID)
   if (juror == null) {
@@ -202,8 +210,8 @@ function getOrCreateJurorStake(juror: Juror, court: Court): JurorStake {
     jurorStake = new JurorStake(jurorStakeID)
     jurorStake.juror = juror.id
     jurorStake.subcourt = court.id
-    jurorStake.stakedToken = BigInt.fromI32(0)
-    jurorStake.lockedToken = BigInt.fromI32(0)
+    jurorStake.stakedToken = BigInt.fromI32(0) //TODO: slash
+    jurorStake.lockedToken = BigInt.fromI32(0) //TODO: impl
     jurorStake.save()
 
     let jurorSubCourts = juror.subCourts
