@@ -14,7 +14,7 @@ import {
   KlerosLiquid__courtsResult,
   KlerosLiquid__getSubcourtResult,
 } from "../generated/KlerosLiquid/KlerosLiquid"
-import { Court, Dispute, KlerosStat, Juror, JurorStake  } from "../generated/schema"
+import { Court, Dispute, KlerosStat, Juror, JurorStake, Arbitrable  } from "../generated/schema"
 
 export function handleNewPhase(event: NewPhase): void {}
 
@@ -78,6 +78,11 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   let court = getOrCreateSubCourt(courtID, event.address)
   court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
   court.save()
+
+  let arbitrableID = dispute.arbitrable.toHexString()
+  let arbitrable = getOrCreateArbitrable(arbitrableID)
+  arbitrable.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
+  arbitrable.save()
 }
 
 export function handleAppealPossible(event: AppealPossible): void {}
@@ -126,6 +131,7 @@ function getOrCreateKlerosStat(): KlerosStat {
     klerosStat.disputeCount = BigInt.fromI32(0)
     klerosStat.uniqueJurorCount = BigInt.fromI32(0)
     klerosStat.activeJurorCount = BigInt.fromI32(0)
+    klerosStat.uniqueArbitrableCount = BigInt.fromI32(0)
     klerosStat.save()
   }
   return klerosStat!
@@ -236,6 +242,20 @@ function updateJurorStat(juror: Juror): void {
   
   juror.stakedToken = totalStaked
   juror.save()
+}
+
+function getOrCreateArbitrable(arbitrableID: string): Arbitrable {
+  let arbitrable = Arbitrable.load(arbitrableID)
+  if (arbitrable == null) {
+    arbitrable = new Arbitrable(arbitrableID)
+    arbitrable.disputeCount = BigInt.fromI32(0)
+    arbitrable.save()
+
+    let klerosStat = getOrCreateKlerosStat()
+    klerosStat.uniqueArbitrableCount = klerosStat.uniqueArbitrableCount.plus(BigInt.fromI32(1))
+    klerosStat.save()
+  }
+  return arbitrable!
 }
 
 function i32ToPeriod(periodNum: i32): string {

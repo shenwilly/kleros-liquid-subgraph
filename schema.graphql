@@ -4,6 +4,7 @@ type KlerosStat @entity {
   disputeCount: BigInt!
   uniqueJurorCount: BigInt!
   activeJurorCount: BigInt!
+  uniqueArbitrableCount: BigInt!
 }
 
 type Court @entity {
@@ -56,6 +57,7 @@ type JurorStake @entity {
 
 type Arbitrable @entity {
   id: ID!
+  disputeCount: BigInt!
 }
 
 enum Period {

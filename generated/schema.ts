@@ -77,6 +77,32 @@ export class KlerosStat extends Entity {
   set activeJurorCount(value: BigInt) {
     this.set("activeJurorCount", Value.fromBigInt(value));
   }
+
+  get uniqueArbitrableCount(): BigInt {
+    let value = this.get("uniqueArbitrableCount");
+    return value.toBigInt();
+  }
+
+  set uniqueArbitrableCount(value: BigInt) {
+    this.set("uniqueArbitrableCount", Value.fromBigInt(value));
+  }
+
+  get phase(): string | null {
+    let value = this.get("phase");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set phase(value: string | null) {
+    if (value === null) {
+      this.unset("phase");
+    } else {
+      this.set("phase", Value.fromString(value as string));
+    }
+  }
 }
 
 export class Court extends Entity {
@@ -499,5 +525,14 @@ export class Arbitrable extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get disputeCount(): BigInt {
+    let value = this.get("disputeCount");
+    return value.toBigInt();
+  }
+
+  set disputeCount(value: BigInt) {
+    this.set("disputeCount", Value.fromBigInt(value));
   }
 }
