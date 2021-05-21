@@ -18,6 +18,7 @@ import {
   ChangeSubcourtJurorFeeCall,
   ChangeSubcourtJurorsForJumpCall,
   ChangeSubcourtTimesPerPeriodCall,
+  KlerosLiquid__jurorsResult,
 } from "../generated/KlerosLiquid/KlerosLiquid"
 import { Court, Dispute, KlerosStat, Juror, JurorStake, Arbitrable  } from "../generated/schema"
 
@@ -96,6 +97,9 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
   if (dispute.period == 'Execution') {
     dispute.ruled = true
     dispute.save()
+
+    // TODO: update juror locked token
+    // let juror = getJurorObj()
   }
 }
 
@@ -136,6 +140,11 @@ function getCourtObj(courtID: BigInt, courtAddress: Address): KlerosLiquid__cour
 function getSubcourtObj(courtID: BigInt, courtAddress: Address): KlerosLiquid__getSubcourtResult {
   let contract = KlerosLiquid.bind(courtAddress)
   return contract.getSubcourt(courtID)
+}
+
+function getJurorObj(jurorID: Address, courtAddress: Address): KlerosLiquid__jurorsResult {
+  let contract = KlerosLiquid.bind(courtAddress)
+  return contract.jurors(jurorID)
 }
 
 function getOrCreateKlerosStat(): KlerosStat {

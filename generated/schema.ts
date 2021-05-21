@@ -486,15 +486,6 @@ export class JurorStake extends Entity {
   set stakedToken(value: BigInt) {
     this.set("stakedToken", Value.fromBigInt(value));
   }
-
-  get lockedToken(): BigInt {
-    let value = this.get("lockedToken");
-    return value.toBigInt();
-  }
-
-  set lockedToken(value: BigInt) {
-    this.set("lockedToken", Value.fromBigInt(value));
-  }
 }
 
 export class Arbitrable extends Entity {
