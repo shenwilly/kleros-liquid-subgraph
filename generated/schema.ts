@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class ExampleEntity extends Entity {
+export class KlerosStat extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,17 +20,17 @@ export class ExampleEntity extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save ExampleEntity entity without an ID");
+    assert(id !== null, "Cannot save KlerosStat entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save ExampleEntity entity with non-string ID. " +
+      "Cannot save KlerosStat entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("ExampleEntity", id.toString(), this);
+    store.set("KlerosStat", id.toString(), this);
   }
 
-  static load(id: string): ExampleEntity | null {
-    return store.get("ExampleEntity", id) as ExampleEntity | null;
+  static load(id: string): KlerosStat | null {
+    return store.get("KlerosStat", id) as KlerosStat | null;
   }
 
   get id(): string {
@@ -42,21 +42,310 @@ export class ExampleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get count(): BigInt {
-    let value = this.get("count");
+  get courtCount(): BigInt {
+    let value = this.get("courtCount");
     return value.toBigInt();
   }
 
-  set count(value: BigInt) {
-    this.set("count", Value.fromBigInt(value));
+  set courtCount(value: BigInt) {
+    this.set("courtCount", Value.fromBigInt(value));
   }
 
-  get _phase(): i32 {
-    let value = this.get("_phase");
+  get disputeCount(): BigInt {
+    let value = this.get("disputeCount");
+    return value.toBigInt();
+  }
+
+  set disputeCount(value: BigInt) {
+    this.set("disputeCount", Value.fromBigInt(value));
+  }
+}
+
+export class Court extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Court entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Court entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Court", id.toString(), this);
+  }
+
+  static load(id: string): Court | null {
+    return store.get("Court", id) as Court | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get subcourtID(): BigInt {
+    let value = this.get("subcourtID");
+    return value.toBigInt();
+  }
+
+  set subcourtID(value: BigInt) {
+    this.set("subcourtID", Value.fromBigInt(value));
+  }
+
+  get parentID(): BigInt | null {
+    let value = this.get("parentID");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set parentID(value: BigInt | null) {
+    if (value === null) {
+      this.unset("parentID");
+    } else {
+      this.set("parentID", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get hiddenVotes(): boolean {
+    let value = this.get("hiddenVotes");
+    return value.toBoolean();
+  }
+
+  set hiddenVotes(value: boolean) {
+    this.set("hiddenVotes", Value.fromBoolean(value));
+  }
+
+  get minStake(): BigInt {
+    let value = this.get("minStake");
+    return value.toBigInt();
+  }
+
+  set minStake(value: BigInt) {
+    this.set("minStake", Value.fromBigInt(value));
+  }
+
+  get alpha(): BigInt {
+    let value = this.get("alpha");
+    return value.toBigInt();
+  }
+
+  set alpha(value: BigInt) {
+    this.set("alpha", Value.fromBigInt(value));
+  }
+
+  get feeForJuror(): BigInt {
+    let value = this.get("feeForJuror");
+    return value.toBigInt();
+  }
+
+  set feeForJuror(value: BigInt) {
+    this.set("feeForJuror", Value.fromBigInt(value));
+  }
+
+  get jurorsForCourtJump(): BigInt {
+    let value = this.get("jurorsForCourtJump");
+    return value.toBigInt();
+  }
+
+  set jurorsForCourtJump(value: BigInt) {
+    this.set("jurorsForCourtJump", Value.fromBigInt(value));
+  }
+
+  get timesPerPeriod(): Array<BigInt> {
+    let value = this.get("timesPerPeriod");
+    return value.toBigIntArray();
+  }
+
+  set timesPerPeriod(value: Array<BigInt>) {
+    this.set("timesPerPeriod", Value.fromBigIntArray(value));
+  }
+
+  get children(): Array<BigInt> {
+    let value = this.get("children");
+    return value.toBigIntArray();
+  }
+
+  set children(value: Array<BigInt>) {
+    this.set("children", Value.fromBigIntArray(value));
+  }
+
+  get disputeCount(): BigInt {
+    let value = this.get("disputeCount");
+    return value.toBigInt();
+  }
+
+  set disputeCount(value: BigInt) {
+    this.set("disputeCount", Value.fromBigInt(value));
+  }
+
+  get policy(): string | null {
+    let value = this.get("policy");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set policy(value: string | null) {
+    if (value === null) {
+      this.unset("policy");
+    } else {
+      this.set("policy", Value.fromString(value as string));
+    }
+  }
+}
+
+export class Dispute extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Dispute entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Dispute entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Dispute", id.toString(), this);
+  }
+
+  static load(id: string): Dispute | null {
+    return store.get("Dispute", id) as Dispute | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get disputeID(): BigInt {
+    let value = this.get("disputeID");
+    return value.toBigInt();
+  }
+
+  set disputeID(value: BigInt) {
+    this.set("disputeID", Value.fromBigInt(value));
+  }
+
+  get arbitrable(): Bytes {
+    let value = this.get("arbitrable");
+    return value.toBytes();
+  }
+
+  set arbitrable(value: Bytes) {
+    this.set("arbitrable", Value.fromBytes(value));
+  }
+
+  get subcourtID(): BigInt {
+    let value = this.get("subcourtID");
+    return value.toBigInt();
+  }
+
+  set subcourtID(value: BigInt) {
+    this.set("subcourtID", Value.fromBigInt(value));
+  }
+
+  get numberOfChoices(): BigInt {
+    let value = this.get("numberOfChoices");
+    return value.toBigInt();
+  }
+
+  set numberOfChoices(value: BigInt) {
+    this.set("numberOfChoices", Value.fromBigInt(value));
+  }
+
+  get period(): i32 {
+    let value = this.get("period");
     return value.toI32();
   }
 
-  set _phase(value: i32) {
-    this.set("_phase", Value.fromI32(value));
+  set period(value: i32) {
+    this.set("period", Value.fromI32(value));
+  }
+
+  get lastPeriodChange(): BigInt {
+    let value = this.get("lastPeriodChange");
+    return value.toBigInt();
+  }
+
+  set lastPeriodChange(value: BigInt) {
+    this.set("lastPeriodChange", Value.fromBigInt(value));
+  }
+
+  get drawsInRound(): BigInt {
+    let value = this.get("drawsInRound");
+    return value.toBigInt();
+  }
+
+  set drawsInRound(value: BigInt) {
+    this.set("drawsInRound", Value.fromBigInt(value));
+  }
+
+  get commitsInRound(): BigInt {
+    let value = this.get("commitsInRound");
+    return value.toBigInt();
+  }
+
+  set commitsInRound(value: BigInt) {
+    this.set("commitsInRound", Value.fromBigInt(value));
+  }
+
+  get ruled(): boolean {
+    let value = this.get("ruled");
+    return value.toBoolean();
+  }
+
+  set ruled(value: boolean) {
+    this.set("ruled", Value.fromBoolean(value));
+  }
+}
+
+export class Juror extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Juror entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Juror entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Juror", id.toString(), this);
+  }
+
+  static load(id: string): Juror | null {
+    return store.get("Juror", id) as Juror | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
   }
 }

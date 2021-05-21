@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: KlerosLiquid
@@ -24,7 +24,7 @@ dataSources:
         - AppealDecision
       abis:
         - name: KlerosLiquid
-          file: ./abis/KlerosLiquid.json
+          file: KlerosLiquid/abis/KlerosLiquid.json
       eventHandlers:
         - event: NewPhase(uint8)
           handler: handleNewPhase
@@ -45,4 +45,4 @@ dataSources:
       callHandlers:
         - function: createSubcourt(uint96,bool,uint256,uint256,uint256,uint256,uint256[4],uint256)
           handler: handleCreateSubcourt
-      file: ./src/mapping.ts
+      file: KlerosLiquid/KlerosLiquid.wasm

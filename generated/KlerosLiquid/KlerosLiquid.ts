@@ -206,7 +206,7 @@ export class AppealDecision__Params {
   }
 }
 
-export class Contract__courtsResult {
+export class KlerosLiquid__courtsResult {
   value0: BigInt;
   value1: boolean;
   value2: BigInt;
@@ -242,7 +242,7 @@ export class Contract__courtsResult {
   }
 }
 
-export class Contract__getSubcourtResult {
+export class KlerosLiquid__getSubcourtResult {
   value0: Array<BigInt>;
   value1: Array<BigInt>;
 
@@ -259,7 +259,7 @@ export class Contract__getSubcourtResult {
   }
 }
 
-export class Contract__disputesResult {
+export class KlerosLiquid__disputesResult {
   value0: BigInt;
   value1: Address;
   value2: BigInt;
@@ -306,7 +306,7 @@ export class Contract__disputesResult {
   }
 }
 
-export class Contract__getVoteResult {
+export class KlerosLiquid__getVoteResult {
   value0: Address;
   value1: Bytes;
   value2: BigInt;
@@ -329,7 +329,7 @@ export class Contract__getVoteResult {
   }
 }
 
-export class Contract__appealPeriodResult {
+export class KlerosLiquid__appealPeriodResult {
   value0: BigInt;
   value1: BigInt;
 
@@ -346,7 +346,7 @@ export class Contract__appealPeriodResult {
   }
 }
 
-export class Contract__delayedSetStakesResult {
+export class KlerosLiquid__delayedSetStakesResult {
   value0: Address;
   value1: BigInt;
   value2: BigInt;
@@ -366,7 +366,7 @@ export class Contract__delayedSetStakesResult {
   }
 }
 
-export class Contract__jurorsResult {
+export class KlerosLiquid__jurorsResult {
   value0: BigInt;
   value1: BigInt;
 
@@ -383,7 +383,7 @@ export class Contract__jurorsResult {
   }
 }
 
-export class Contract__getDisputeResult {
+export class KlerosLiquid__getDisputeResult {
   value0: Array<BigInt>;
   value1: Array<BigInt>;
   value2: Array<BigInt>;
@@ -419,7 +419,7 @@ export class Contract__getDisputeResult {
   }
 }
 
-export class Contract__getVoteCounterResult {
+export class KlerosLiquid__getVoteCounterResult {
   value0: BigInt;
   value1: Array<BigInt>;
   value2: boolean;
@@ -439,9 +439,9 @@ export class Contract__getVoteCounterResult {
   }
 }
 
-export class Contract extends ethereum.SmartContract {
-  static bind(address: Address): Contract {
-    return new Contract("Contract", address);
+export class KlerosLiquid extends ethereum.SmartContract {
+  static bind(address: Address): KlerosLiquid {
+    return new KlerosLiquid("KlerosLiquid", address);
   }
 
   RNBlock(): BigInt {
@@ -583,14 +583,14 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  courts(param0: BigInt): Contract__courtsResult {
+  courts(param0: BigInt): KlerosLiquid__courtsResult {
     let result = super.call(
       "courts",
       "courts(uint256):(uint96,bool,uint256,uint256,uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
-    return new Contract__courtsResult(
+    return new KlerosLiquid__courtsResult(
       result[0].toBigInt(),
       result[1].toBoolean(),
       result[2].toBigInt(),
@@ -600,7 +600,7 @@ export class Contract extends ethereum.SmartContract {
     );
   }
 
-  try_courts(param0: BigInt): ethereum.CallResult<Contract__courtsResult> {
+  try_courts(param0: BigInt): ethereum.CallResult<KlerosLiquid__courtsResult> {
     let result = super.tryCall(
       "courts",
       "courts(uint256):(uint96,bool,uint256,uint256,uint256,uint256)",
@@ -611,7 +611,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__courtsResult(
+      new KlerosLiquid__courtsResult(
         value[0].toBigInt(),
         value[1].toBoolean(),
         value[2].toBigInt(),
@@ -641,14 +641,14 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  getSubcourt(_subcourtID: BigInt): Contract__getSubcourtResult {
+  getSubcourt(_subcourtID: BigInt): KlerosLiquid__getSubcourtResult {
     let result = super.call(
       "getSubcourt",
       "getSubcourt(uint96):(uint256[],uint256[4])",
       [ethereum.Value.fromUnsignedBigInt(_subcourtID)]
     );
 
-    return new Contract__getSubcourtResult(
+    return new KlerosLiquid__getSubcourtResult(
       result[0].toBigIntArray(),
       result[1].toBigIntArray()
     );
@@ -656,7 +656,7 @@ export class Contract extends ethereum.SmartContract {
 
   try_getSubcourt(
     _subcourtID: BigInt
-  ): ethereum.CallResult<Contract__getSubcourtResult> {
+  ): ethereum.CallResult<KlerosLiquid__getSubcourtResult> {
     let result = super.tryCall(
       "getSubcourt",
       "getSubcourt(uint96):(uint256[],uint256[4])",
@@ -667,7 +667,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__getSubcourtResult(
+      new KlerosLiquid__getSubcourtResult(
         value[0].toBigIntArray(),
         value[1].toBigIntArray()
       )
@@ -709,14 +709,14 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  disputes(param0: BigInt): Contract__disputesResult {
+  disputes(param0: BigInt): KlerosLiquid__disputesResult {
     let result = super.call(
       "disputes",
       "disputes(uint256):(uint96,address,uint256,uint8,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
-    return new Contract__disputesResult(
+    return new KlerosLiquid__disputesResult(
       result[0].toBigInt(),
       result[1].toAddress(),
       result[2].toBigInt(),
@@ -728,7 +728,9 @@ export class Contract extends ethereum.SmartContract {
     );
   }
 
-  try_disputes(param0: BigInt): ethereum.CallResult<Contract__disputesResult> {
+  try_disputes(
+    param0: BigInt
+  ): ethereum.CallResult<KlerosLiquid__disputesResult> {
     let result = super.tryCall(
       "disputes",
       "disputes(uint256):(uint96,address,uint256,uint8,uint256,uint256,uint256,bool)",
@@ -739,7 +741,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__disputesResult(
+      new KlerosLiquid__disputesResult(
         value[0].toBigInt(),
         value[1].toAddress(),
         value[2].toBigInt(),
@@ -809,7 +811,7 @@ export class Contract extends ethereum.SmartContract {
     _disputeID: BigInt,
     _appeal: BigInt,
     _voteID: BigInt
-  ): Contract__getVoteResult {
+  ): KlerosLiquid__getVoteResult {
     let result = super.call(
       "getVote",
       "getVote(uint256,uint256,uint256):(address,bytes32,uint256,bool)",
@@ -820,7 +822,7 @@ export class Contract extends ethereum.SmartContract {
       ]
     );
 
-    return new Contract__getVoteResult(
+    return new KlerosLiquid__getVoteResult(
       result[0].toAddress(),
       result[1].toBytes(),
       result[2].toBigInt(),
@@ -832,7 +834,7 @@ export class Contract extends ethereum.SmartContract {
     _disputeID: BigInt,
     _appeal: BigInt,
     _voteID: BigInt
-  ): ethereum.CallResult<Contract__getVoteResult> {
+  ): ethereum.CallResult<KlerosLiquid__getVoteResult> {
     let result = super.tryCall(
       "getVote",
       "getVote(uint256,uint256,uint256):(address,bytes32,uint256,bool)",
@@ -847,7 +849,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__getVoteResult(
+      new KlerosLiquid__getVoteResult(
         value[0].toAddress(),
         value[1].toBytes(),
         value[2].toBigInt(),
@@ -880,14 +882,14 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  appealPeriod(_disputeID: BigInt): Contract__appealPeriodResult {
+  appealPeriod(_disputeID: BigInt): KlerosLiquid__appealPeriodResult {
     let result = super.call(
       "appealPeriod",
       "appealPeriod(uint256):(uint256,uint256)",
       [ethereum.Value.fromUnsignedBigInt(_disputeID)]
     );
 
-    return new Contract__appealPeriodResult(
+    return new KlerosLiquid__appealPeriodResult(
       result[0].toBigInt(),
       result[1].toBigInt()
     );
@@ -895,7 +897,7 @@ export class Contract extends ethereum.SmartContract {
 
   try_appealPeriod(
     _disputeID: BigInt
-  ): ethereum.CallResult<Contract__appealPeriodResult> {
+  ): ethereum.CallResult<KlerosLiquid__appealPeriodResult> {
     let result = super.tryCall(
       "appealPeriod",
       "appealPeriod(uint256):(uint256,uint256)",
@@ -906,7 +908,10 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__appealPeriodResult(value[0].toBigInt(), value[1].toBigInt())
+      new KlerosLiquid__appealPeriodResult(
+        value[0].toBigInt(),
+        value[1].toBigInt()
+      )
     );
   }
 
@@ -948,14 +953,14 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  delayedSetStakes(param0: BigInt): Contract__delayedSetStakesResult {
+  delayedSetStakes(param0: BigInt): KlerosLiquid__delayedSetStakesResult {
     let result = super.call(
       "delayedSetStakes",
       "delayedSetStakes(uint256):(address,uint96,uint128)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
-    return new Contract__delayedSetStakesResult(
+    return new KlerosLiquid__delayedSetStakesResult(
       result[0].toAddress(),
       result[1].toBigInt(),
       result[2].toBigInt()
@@ -964,7 +969,7 @@ export class Contract extends ethereum.SmartContract {
 
   try_delayedSetStakes(
     param0: BigInt
-  ): ethereum.CallResult<Contract__delayedSetStakesResult> {
+  ): ethereum.CallResult<KlerosLiquid__delayedSetStakesResult> {
     let result = super.tryCall(
       "delayedSetStakes",
       "delayedSetStakes(uint256):(address,uint96,uint128)",
@@ -975,7 +980,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__delayedSetStakesResult(
+      new KlerosLiquid__delayedSetStakesResult(
         value[0].toAddress(),
         value[1].toBigInt(),
         value[2].toBigInt()
@@ -1102,18 +1107,18 @@ export class Contract extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  jurors(param0: Address): Contract__jurorsResult {
+  jurors(param0: Address): KlerosLiquid__jurorsResult {
     let result = super.call("jurors", "jurors(address):(uint256,uint256)", [
       ethereum.Value.fromAddress(param0)
     ]);
 
-    return new Contract__jurorsResult(
+    return new KlerosLiquid__jurorsResult(
       result[0].toBigInt(),
       result[1].toBigInt()
     );
   }
 
-  try_jurors(param0: Address): ethereum.CallResult<Contract__jurorsResult> {
+  try_jurors(param0: Address): ethereum.CallResult<KlerosLiquid__jurorsResult> {
     let result = super.tryCall("jurors", "jurors(address):(uint256,uint256)", [
       ethereum.Value.fromAddress(param0)
     ]);
@@ -1122,18 +1127,18 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__jurorsResult(value[0].toBigInt(), value[1].toBigInt())
+      new KlerosLiquid__jurorsResult(value[0].toBigInt(), value[1].toBigInt())
     );
   }
 
-  getDispute(_disputeID: BigInt): Contract__getDisputeResult {
+  getDispute(_disputeID: BigInt): KlerosLiquid__getDisputeResult {
     let result = super.call(
       "getDispute",
       "getDispute(uint256):(uint256[],uint256[],uint256[],uint256[],uint256[],uint256[])",
       [ethereum.Value.fromUnsignedBigInt(_disputeID)]
     );
 
-    return new Contract__getDisputeResult(
+    return new KlerosLiquid__getDisputeResult(
       result[0].toBigIntArray(),
       result[1].toBigIntArray(),
       result[2].toBigIntArray(),
@@ -1145,7 +1150,7 @@ export class Contract extends ethereum.SmartContract {
 
   try_getDispute(
     _disputeID: BigInt
-  ): ethereum.CallResult<Contract__getDisputeResult> {
+  ): ethereum.CallResult<KlerosLiquid__getDisputeResult> {
     let result = super.tryCall(
       "getDispute",
       "getDispute(uint256):(uint256[],uint256[],uint256[],uint256[],uint256[],uint256[])",
@@ -1156,7 +1161,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__getDisputeResult(
+      new KlerosLiquid__getDisputeResult(
         value[0].toBigIntArray(),
         value[1].toBigIntArray(),
         value[2].toBigIntArray(),
@@ -1170,7 +1175,7 @@ export class Contract extends ethereum.SmartContract {
   getVoteCounter(
     _disputeID: BigInt,
     _appeal: BigInt
-  ): Contract__getVoteCounterResult {
+  ): KlerosLiquid__getVoteCounterResult {
     let result = super.call(
       "getVoteCounter",
       "getVoteCounter(uint256,uint256):(uint256,uint256[],bool)",
@@ -1180,7 +1185,7 @@ export class Contract extends ethereum.SmartContract {
       ]
     );
 
-    return new Contract__getVoteCounterResult(
+    return new KlerosLiquid__getVoteCounterResult(
       result[0].toBigInt(),
       result[1].toBigIntArray(),
       result[2].toBoolean()
@@ -1190,7 +1195,7 @@ export class Contract extends ethereum.SmartContract {
   try_getVoteCounter(
     _disputeID: BigInt,
     _appeal: BigInt
-  ): ethereum.CallResult<Contract__getVoteCounterResult> {
+  ): ethereum.CallResult<KlerosLiquid__getVoteCounterResult> {
     let result = super.tryCall(
       "getVoteCounter",
       "getVoteCounter(uint256,uint256):(uint256,uint256[],bool)",
@@ -1204,7 +1209,7 @@ export class Contract extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new Contract__getVoteCounterResult(
+      new KlerosLiquid__getVoteCounterResult(
         value[0].toBigInt(),
         value[1].toBigIntArray(),
         value[2].toBoolean()
