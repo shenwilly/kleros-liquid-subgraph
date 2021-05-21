@@ -29,7 +29,16 @@ export function handleNewPeriod(event: NewPeriod): void {
   dispute.save()
 }
 
-export function handleStakeSet(event: StakeSet): void {}
+export function handleStakeSet(event: StakeSet): void {
+  let jurorID = event.params._address.toHexString()
+
+  let juror = getOrCreateJuror(jurorID)
+  let subcourt = getOrCreateSubCourt(event.params._subcourtID.toString(), event.address)
+
+  let jurorStake = getOrCreateJurorStake(juror.id, subcourt.id)
+  jurorStake.stakedToken = event.params._newTotalStake
+  jurorStake.save()
+}
 
 export function handleDraw(event: Draw): void {}
 
@@ -148,4 +157,32 @@ function getOrCreateSubCourt(courtID: BigInt, klerosAddress: Address): Court {
     court.save()
   }
   return court!
+function getOrCreateJuror(jurorID: string): Juror {
+  let juror = Juror.load(jurorID)
+  if (juror == null) {
+    juror = new Juror(jurorID)
+    juror.subCourts = []
+    juror.stakedToken = BigInt.fromI32(0)
+    juror.lockedToken = BigInt.fromI32(0)
+    juror.save()
+
+    let klerosStat = getOrCreateKlerosStat()
+    klerosStat.uniqueJurorCount = klerosStat.uniqueJurorCount.plus(BigInt.fromI32(1))
+    klerosStat.save()
+  }
+  return juror!
+}
+
+function getOrCreateJurorStake(jurorID: string, courtID: string): JurorStake {
+  const jurorStakeID = jurorID + '-' + courtID
+  let jurorStake = JurorStake.load(jurorStakeID)
+  if (jurorStake == null) {
+    jurorStake = new JurorStake(jurorStakeID)
+    jurorStake.juror = jurorID
+    jurorStake.subcourt = courtID
+    jurorStake.stakedToken = BigInt.fromI32(0)
+    jurorStake.lockedToken = BigInt.fromI32(0)
+    jurorStake.save()
+  }
+  return jurorStake!
 }
