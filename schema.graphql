@@ -31,7 +31,7 @@ type Dispute @entity {
 
   subcourt: Court!
   numberOfChoices: BigInt!
-  period: Int! # Enum
+  period: Period! # Enum
   lastPeriodChange: BigInt!
   drawsInRound: BigInt!
   commitsInRound: BigInt!
@@ -56,4 +56,12 @@ type JurorStake @entity {
 
 type Arbitrable @entity {
   id: ID!
+}
+
+enum Period {
+  Evidence,
+  Commit,
+  Vote,
+  Appeal,
+  Execution
 }

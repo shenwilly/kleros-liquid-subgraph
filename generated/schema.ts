@@ -291,13 +291,13 @@ export class Dispute extends Entity {
     this.set("numberOfChoices", Value.fromBigInt(value));
   }
 
-  get period(): i32 {
+  get period(): string {
     let value = this.get("period");
-    return value.toI32();
+    return value.toString();
   }
 
-  set period(value: i32) {
-    this.set("period", Value.fromI32(value));
+  set period(value: string) {
+    this.set("period", Value.fromString(value));
   }
 
   get lastPeriodChange(): BigInt {

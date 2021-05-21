@@ -23,7 +23,7 @@ export function handleNewPeriod(event: NewPeriod): void {
   let dispute = Dispute.load(disputeID)
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
-  dispute.period = disputeObj.value3
+  dispute.period = i32ToPeriod(disputeObj.value3)
   dispute.lastPeriodChange = disputeObj.value4
 
   dispute.save()
@@ -54,7 +54,7 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), event.address)
   dispute.subcourt = subcourt.id
   dispute.numberOfChoices = disputeObj.value2
-  dispute.period = disputeObj.value3
+  dispute.period = i32ToPeriod(disputeObj.value3)
   dispute.lastPeriodChange = disputeObj.value4
   dispute.drawsInRound = disputeObj.value5;
   dispute.commitsInRound = disputeObj.value6;
@@ -189,4 +189,26 @@ function getOrCreateJurorStake(jurorID: string, courtID: string): JurorStake {
     jurorStake.save()
   }
   return jurorStake!
+function i32ToPeriod(periodNum: i32): string {
+  let period: string
+  switch (periodNum) {
+    case 0:
+      period = 'Evidence'
+      break;
+    case 1:
+      period = 'Commit'
+      break;
+    case 2:
+      period = 'Vote'
+      break;
+    case 3:
+      period = 'Appeal'
+      break;
+    case 4:
+      period = 'Execution'
+      break;
+    default:
+      break;
+  }
+  return period;
 }
