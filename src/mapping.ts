@@ -123,7 +123,7 @@ function getCourtObj(courtID: BigInt, courtAddress: Address): KlerosLiquid__cour
   return contract.courts(courtID)
 }
 
-function getSubcourt(courtID: BigInt, courtAddress: Address): KlerosLiquid__getSubcourtResult {
+function getSubcourtObj(courtID: BigInt, courtAddress: Address): KlerosLiquid__getSubcourtResult {
   let contract = KlerosLiquid.bind(courtAddress)
   return contract.getSubcourt(courtID)
 }
@@ -147,12 +147,12 @@ function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
   if (court == null) {
     court = new Court(courtID)
     
-    let courtObject = getCourtObj(BigInt.fromString(courtID), klerosAddress)
-    let subCourtObj = getSubcourt(BigInt.fromString(courtID), klerosAddress)
+    let courtObj = getCourtObj(BigInt.fromString(courtID), klerosAddress)
+    let subCourtObj = getSubcourtObj(BigInt.fromString(courtID), klerosAddress)
 
     court.subcourtID = BigInt.fromString(courtID)
 
-    let parentID = courtObject.value0
+    let parentID = courtObj.value0
     if (parentID != BigInt.fromString(courtID)) {
       let parentCourt = getOrCreateSubCourt(parentID.toString(), klerosAddress)
       court.parent = parentCourt.id
@@ -162,11 +162,11 @@ function getOrCreateSubCourt(courtID: string, klerosAddress: Address): Court {
       parentCourt.children = parentCourtChildren
       parentCourt.save()
     }
-    court.hiddenVotes = courtObject.value1
-    court.minStake = courtObject.value2
-    court.alpha = courtObject.value3
-    court.feeForJuror = courtObject.value4
-    court.jurorsForCourtJump = courtObject.value5
+    court.hiddenVotes = courtObj.value1
+    court.minStake = courtObj.value2
+    court.alpha = courtObj.value3
+    court.feeForJuror = courtObj.value4
+    court.jurorsForCourtJump = courtObj.value5
     court.disputeCount = BigInt.fromI32(0)
     court.children = []
     court.timesPerPeriod = subCourtObj.value1
