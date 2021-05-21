@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts"
+import { Address, BigInt, log, store } from "@graphprotocol/graph-ts"
 import {
   KlerosLiquid,
   NewPhase,
@@ -35,9 +35,17 @@ export function handleStakeSet(event: StakeSet): void {
   let juror = getOrCreateJuror(jurorID)
   let subcourt = getOrCreateSubCourt(event.params._subcourtID.toString(), event.address)
 
-  let jurorStake = getOrCreateJurorStake(juror.id, subcourt.id)
-  jurorStake.stakedToken = event.params._newTotalStake
-  jurorStake.save()
+  let jurorStake = getOrCreateJurorStake(juror, subcourt)
+  let newTotalStake = event.params._newTotalStake
+
+  if (newTotalStake == BigInt.fromI32(0)) {
+    removeJurorStake(juror, subcourt)
+  } else {
+    jurorStake.stakedToken = event.params._newTotalStake
+    jurorStake.save()
+  }
+
+  updateJurorStat(juror)
 }
 
 export function handleDraw(event: Draw): void {}
@@ -177,18 +185,64 @@ function getOrCreateJuror(jurorID: string): Juror {
   return juror!
 }
 
-function getOrCreateJurorStake(jurorID: string, courtID: string): JurorStake {
-  const jurorStakeID = jurorID + '-' + courtID
+function getJurorStakeID(jurorID: string, courtID: string): string {
+  return jurorID + '-' + courtID;
+}
+
+function getOrCreateJurorStake(juror: Juror, court: Court): JurorStake {
+  let jurorStakeID = getJurorStakeID(juror.id, court.id)
   let jurorStake = JurorStake.load(jurorStakeID)
   if (jurorStake == null) {
     jurorStake = new JurorStake(jurorStakeID)
-    jurorStake.juror = jurorID
-    jurorStake.subcourt = courtID
+    jurorStake.juror = juror.id
+    jurorStake.subcourt = court.id
     jurorStake.stakedToken = BigInt.fromI32(0)
     jurorStake.lockedToken = BigInt.fromI32(0)
     jurorStake.save()
+
+    let jurorSubCourts = juror.subCourts
+    jurorSubCourts.push(court.id)
+    juror.subCourts = jurorSubCourts
+    juror.save()
   }
   return jurorStake!
+}
+
+function removeJurorStake(juror: Juror, court: Court): void {
+  let jurorStakeID = getJurorStakeID(juror.id, court.id)
+  let jurorStake = JurorStake.load(jurorStakeID)
+  if (jurorStake != null) {
+    store.remove('JurorStake', jurorStake.id)
+    
+    let newSubCourts: string[] = []
+    let jurorSubCourts = juror.subCourts
+    for (let i = 0; i < jurorSubCourts.length; i++) {
+      let jurorSubCourt = jurorSubCourts[i]
+      if (jurorSubCourt != court.id) {
+        newSubCourts.push(jurorSubCourt)
+      }
+    }
+    juror.subCourts = newSubCourts
+    juror.save()
+  }
+}
+
+function updateJurorStat(juror: Juror): void {
+  // TODO: totalLocked
+  let totalStaked = BigInt.fromI32(0)
+  let jurorSubCourts = juror.subCourts
+  
+  for (let i = 0; i < jurorSubCourts.length; i++) {
+    let subCourtID = jurorSubCourts[i]
+    let jurorStakeID = getJurorStakeID(juror.id, subCourtID)
+    let jurorStake = JurorStake.load(jurorStakeID)
+    totalStaked = totalStaked.plus(jurorStake.stakedToken)
+  }
+  
+  juror.stakedToken = totalStaked
+  juror.save()
+}
+
 function i32ToPeriod(periodNum: i32): string {
   let period: string
   switch (periodNum) {
