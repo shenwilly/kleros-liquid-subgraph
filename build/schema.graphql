@@ -8,7 +8,7 @@ type Court @entity {
   id: ID!
 
   subcourtID: BigInt! # uint256
-  parentID: BigInt # uint256
+  parent: Court # uint256
 
   hiddenVotes: Boolean!
   minStake: BigInt! #uint256
@@ -27,7 +27,7 @@ type Dispute @entity {
   disputeID: BigInt! # uint256
   arbitrable: Bytes! # address
 
-  subcourtID: BigInt! # uint256
+  subcourt: Court! # uint256
   numberOfChoices: BigInt! # uint256
   period: Int! # Enum
   lastPeriodChange: BigInt! # uint256
@@ -39,4 +39,9 @@ type Dispute @entity {
 type Juror @entity {
   id: ID!
   
+}
+
+type Arbitrable @entity {
+  id: ID!
+  address: Bytes! # address
 }

@@ -100,20 +100,20 @@ export class Court extends Entity {
     this.set("subcourtID", Value.fromBigInt(value));
   }
 
-  get parentID(): BigInt | null {
-    let value = this.get("parentID");
+  get parent(): string | null {
+    let value = this.get("parent");
     if (value === null) {
       return null;
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set parentID(value: BigInt | null) {
+  set parent(value: string | null) {
     if (value === null) {
-      this.unset("parentID");
+      this.unset("parent");
     } else {
-      this.set("parentID", Value.fromBigInt(value as BigInt));
+      this.set("parent", Value.fromString(value as string));
     }
   }
 
@@ -255,13 +255,13 @@ export class Dispute extends Entity {
     this.set("arbitrable", Value.fromBytes(value));
   }
 
-  get subcourtID(): BigInt {
-    let value = this.get("subcourtID");
-    return value.toBigInt();
+  get subcourt(): string {
+    let value = this.get("subcourt");
+    return value.toString();
   }
 
-  set subcourtID(value: BigInt) {
-    this.set("subcourtID", Value.fromBigInt(value));
+  set subcourt(value: string) {
+    this.set("subcourt", Value.fromString(value));
   }
 
   get numberOfChoices(): BigInt {
@@ -347,5 +347,45 @@ export class Juror extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+}
+
+export class Arbitrable extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Arbitrable entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Arbitrable entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Arbitrable", id.toString(), this);
+  }
+
+  static load(id: string): Arbitrable | null {
+    return store.get("Arbitrable", id) as Arbitrable | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    return value.toBytes();
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
   }
 }

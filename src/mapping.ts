@@ -19,8 +19,8 @@ import { Court, Dispute, KlerosStat  } from "../generated/schema"
 export function handleNewPhase(event: NewPhase): void {}
 
 export function handleNewPeriod(event: NewPeriod): void {
-  let disputeId = event.params._disputeID.toString()
-  let dispute = Dispute.load(disputeId)
+  let disputeID = event.params._disputeID.toString()
+  let dispute = Dispute.load(disputeID)
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
   dispute.period = disputeObj.value3
@@ -42,7 +42,8 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   dispute.arbitrable = event.params._arbitrable
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
-  dispute.subcourtID = disputeObj.value0
+  let subcourt = getOrCreateSubCourt(disputeObj.value0, event.address)
+  dispute.subcourt = subcourt.id
   dispute.numberOfChoices = disputeObj.value2
   dispute.period = disputeObj.value3
   dispute.lastPeriodChange = disputeObj.value4
@@ -56,8 +57,8 @@ export function handleDisputeCreation(event: DisputeCreation): void {
   klerosStat.disputeCount = klerosStat.disputeCount.plus(BigInt.fromI32(1))
   klerosStat.save()
 
-  let courtId = dispute.subcourtID
-  let court = getOrCreateSubCourt(courtId, event.address)
+  let courtID = dispute.subcourt
+  let court = getOrCreateSubCourt(BigInt.fromString(courtID), event.address)
   court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
   court.save()
 }
@@ -65,8 +66,8 @@ export function handleDisputeCreation(event: DisputeCreation): void {
 export function handleAppealPossible(event: AppealPossible): void {}
 
 export function handleAppealDecision(event: AppealDecision): void {
-  let disputeId = event.params._disputeID.toString()
-  let dispute = Dispute.load(disputeId)
+  let disputeID = event.params._disputeID.toString()
+  let dispute = Dispute.load(disputeID)
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
   dispute.lastPeriodChange = disputeObj.value4
@@ -85,19 +86,19 @@ export function handleCreateSubcourt(call: CreateSubcourtCall): void {
   klerosStat.save();
 }
 
-function getDisputeObj(disputeId: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
+function getDisputeObj(disputeID: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
   let contract = KlerosLiquid.bind(courtAddress)
-  return contract.disputes(disputeId)
+  return contract.disputes(disputeID)
 }
 
-function getCourtObj(courtId: BigInt, courtAddress: Address): KlerosLiquid__courtsResult {
+function getCourtObj(courtID: BigInt, courtAddress: Address): KlerosLiquid__courtsResult {
   let contract = KlerosLiquid.bind(courtAddress)
-  return contract.courts(courtId)
+  return contract.courts(courtID)
 }
 
-function getSubcourt(courtId: BigInt, courtAddress: Address): KlerosLiquid__getSubcourtResult {
+function getSubcourt(courtID: BigInt, courtAddress: Address): KlerosLiquid__getSubcourtResult {
   let contract = KlerosLiquid.bind(courtAddress)
-  return contract.getSubcourt(courtId)
+  return contract.getSubcourt(courtID)
 }
 
 // function getPeriod(period: BigInt): Period {
@@ -121,16 +122,21 @@ function getOrCreateKlerosStat(): KlerosStat {
   return klerosStat!
 }
 
-function getOrCreateSubCourt(courtId: BigInt, klerosAddress: Address): Court {
-  let court = Court.load(courtId.toString())
+function getOrCreateSubCourt(courtID: BigInt, klerosAddress: Address): Court {
+  let court = Court.load(courtID.toString())
   if (court == null) {
-    court = new Court(courtId.toString())
+    court = new Court(courtID.toString())
 
-    let courtObject = getCourtObj(courtId, klerosAddress)
-    let subCourtObj = getSubcourt(courtId, klerosAddress)
+    let courtObject = getCourtObj(courtID, klerosAddress)
+    let subCourtObj = getSubcourt(courtID, klerosAddress)
 
-    court.subcourtID = courtId
-    court.parentID = courtObject.value0
+    court.subcourtID = courtID
+
+    let parentID = courtObject.value0
+    if (parentID != courtID) {
+      let parent = getOrCreateSubCourt(parentID, klerosAddress)
+      court.parent = parent.id
+    }
     court.hiddenVotes = courtObject.value1
     court.minStake = courtObject.value2
     court.alpha = courtObject.value3
