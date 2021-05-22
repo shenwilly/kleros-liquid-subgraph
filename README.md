@@ -1,2 +1,4 @@
-# kleros-liquid-subgraph
+# Kleros Liquid Subgraph
+
+A subgraph for Kleros Court
 
