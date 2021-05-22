@@ -129,14 +129,12 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
     dispute.ruled = true
     dispute.save()
 
-    // let jurorIDs: string[] = []
-
     let latestRound = dispute.latestRound
-    for (let i = BigInt.fromI32(0); i < latestRound; i.plus(BigInt.fromI32(0))) {
-      let disputeRound = getOrCreateDisputeRound(disputeID, i, call.to)
+    for (let i = 0; i < latestRound.toI32(); i++) {
+      let disputeRound = getOrCreateDisputeRound(disputeID, BigInt.fromI32(i), call.to)
       let voteCount = disputeRound.voteCount
-      for (let j = BigInt.fromI32(0); j < voteCount; j.plus(BigInt.fromI32(0))) {
-        let voteID = getVoteID(disputeID, i, j.toString())
+      for (let j = 0; j < voteCount.toI32(); j++) {
+        let voteID = getVoteID(disputeID, BigInt.fromI32(i), j.toString())
         let vote = Vote.load(voteID)
         if (vote != null) {
           let jurorID = vote.juror
