@@ -139,7 +139,7 @@ export function getOrCreateJurorStake(juror: Juror, court: Court): JurorStake {
 		jurorStake = new JurorStake(jurorStakeID)
 		jurorStake.juror = juror.id
 		jurorStake.subcourt = court.id
-		jurorStake.stakedToken = BigInt.fromI32(0) //TODO: slash
+		jurorStake.stakedToken = BigInt.fromI32(0)
 		jurorStake.save()
 	
 		let jurorSubCourts = juror.subCourts
