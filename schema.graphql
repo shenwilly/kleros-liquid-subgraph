@@ -36,6 +36,8 @@ type Dispute @entity {
   drawsInRound: BigInt!
   commitsInRound: BigInt!
   ruled: Boolean!
+
+  rounds: [DisputeRound!] ! @derivedFrom(field: "dispute")
 }
 
 type Juror @entity {
@@ -62,6 +64,23 @@ type Policy @entity {
 type Arbitrable @entity {
   id: ID!
   disputeCount: BigInt!
+}
+
+type DisputeRound @entity {
+  id: ID!
+  dispute: Dispute!
+  round: BigInt!
+
+  votes: [Vote!] ! @derivedFrom(field: "disputeRound")
+  # TODO: vote count, tied, winner
+}
+
+type Vote @entity {
+  id: ID!
+  disputeRound: DisputeRound!
+  juror: Juror!
+  
+  # TODO: voted, commit, choice
 }
 
 enum Period {

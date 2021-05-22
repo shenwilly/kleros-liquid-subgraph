@@ -335,6 +335,15 @@ export class Dispute extends Entity {
   set ruled(value: boolean) {
     this.set("ruled", Value.fromBoolean(value));
   }
+
+  get rounds(): Array<string> {
+    let value = this.get("rounds");
+    return value.toStringArray();
+  }
+
+  set rounds(value: Array<string>) {
+    this.set("rounds", Value.fromStringArray(value));
+  }
 }
 
 export class Juror extends Entity {
@@ -548,5 +557,112 @@ export class Arbitrable extends Entity {
 
   set disputeCount(value: BigInt) {
     this.set("disputeCount", Value.fromBigInt(value));
+  }
+}
+
+export class DisputeRound extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save DisputeRound entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save DisputeRound entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("DisputeRound", id.toString(), this);
+  }
+
+  static load(id: string): DisputeRound | null {
+    return store.get("DisputeRound", id) as DisputeRound | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get dispute(): string {
+    let value = this.get("dispute");
+    return value.toString();
+  }
+
+  set dispute(value: string) {
+    this.set("dispute", Value.fromString(value));
+  }
+
+  get round(): BigInt {
+    let value = this.get("round");
+    return value.toBigInt();
+  }
+
+  set round(value: BigInt) {
+    this.set("round", Value.fromBigInt(value));
+  }
+
+  get votes(): Array<string> {
+    let value = this.get("votes");
+    return value.toStringArray();
+  }
+
+  set votes(value: Array<string>) {
+    this.set("votes", Value.fromStringArray(value));
+  }
+}
+
+export class Vote extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Vote entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Vote entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Vote", id.toString(), this);
+  }
+
+  static load(id: string): Vote | null {
+    return store.get("Vote", id) as Vote | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get disputeRound(): string {
+    let value = this.get("disputeRound");
+    return value.toString();
+  }
+
+  set disputeRound(value: string) {
+    this.set("disputeRound", Value.fromString(value));
+  }
+
+  get juror(): string {
+    let value = this.get("juror");
+    return value.toString();
+  }
+
+  set juror(value: string) {
+    this.set("juror", Value.fromString(value));
   }
 }
