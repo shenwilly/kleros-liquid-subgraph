@@ -69,15 +69,6 @@ export class KlerosStat extends Entity {
     this.set("uniqueJurorCount", Value.fromBigInt(value));
   }
 
-  get activeJurorCount(): BigInt {
-    let value = this.get("activeJurorCount");
-    return value.toBigInt();
-  }
-
-  set activeJurorCount(value: BigInt) {
-    this.set("activeJurorCount", Value.fromBigInt(value));
-  }
-
   get uniqueArbitrableCount(): BigInt {
     let value = this.get("uniqueArbitrableCount");
     return value.toBigInt();

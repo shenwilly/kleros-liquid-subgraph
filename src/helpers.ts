@@ -35,7 +35,6 @@ export function getOrCreateKlerosStat(): KlerosStat {
 		klerosStat.courtCount = BigInt.fromI32(1) //discount general court #0
 		klerosStat.disputeCount = BigInt.fromI32(0)
 		klerosStat.uniqueJurorCount = BigInt.fromI32(0)
-		klerosStat.activeJurorCount = BigInt.fromI32(0) // TODO: impl
 		klerosStat.uniqueArbitrableCount = BigInt.fromI32(0)
 		klerosStat.save()
 	}
@@ -170,7 +169,6 @@ export function removeJurorStake(juror: Juror, court: Court): void {
 }
   
 export function updateJurorStat(juror: Juror): void {
-	// TODO: totalLocked
 	let totalStaked = BigInt.fromI32(0)
 	let jurorSubCourts = juror.subCourts
 	
