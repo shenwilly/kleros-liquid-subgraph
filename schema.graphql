@@ -80,8 +80,9 @@ type Vote @entity {
   id: ID!
   disputeRound: DisputeRound!
   juror: Juror!
-  
-  # TODO: voted, commit, choice
+  voted: Boolean!
+  commit: Bytes
+  choice: BigInt
 }
 
 enum Period {
