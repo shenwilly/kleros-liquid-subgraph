@@ -120,7 +120,7 @@ export function getOrCreateJuror(jurorID: string): Juror {
 		juror = new Juror(jurorID)
 		juror.subCourts = []
 		juror.stakedToken = BigInt.fromI32(0)
-		juror.lockedToken = BigInt.fromI32(0) // TODO impl
+		juror.lockedToken = BigInt.fromI32(0)
 		juror.save()
 
 		let klerosStat = getOrCreateKlerosStat()
@@ -136,6 +136,11 @@ export function getJurorStakeID(jurorID: string, courtID: string): string {
 
 export function getDisputeRoundID(disputeID: string, round: BigInt): string {
 	return disputeID + '-' + round.toString()
+}
+
+export function getVoteID(disputeID: string, round: BigInt, vote: string): string {
+	let disputeRoundId = getDisputeRoundID(disputeID, round)
+	return disputeRoundId + '-' + vote
 }
   
 export function getOrCreateJurorStake(juror: Juror, court: Court): JurorStake {
@@ -220,8 +225,7 @@ export function getOrCreateDisputeRound(disputeID: string, round: BigInt, kleros
 }
 
 export function getOrCreateVote(disputeID: string, round: BigInt, jurorID: string, vote: BigInt, klerosAddress: Address): Vote {
-	let disputeRoundId = getDisputeRoundID(disputeID, round)
-	let voteID = disputeRoundId + '-' + vote.toString()
+	let voteID = getVoteID(disputeID, round, vote.toString())
 
 	let voteEntity = Vote.load(voteID)
 	if (voteEntity == null) {

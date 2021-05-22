@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts"
+import { Address, BigInt, log } from "@graphprotocol/graph-ts"
 import {
   NewPhase,
   NewPeriod,
@@ -17,8 +17,10 @@ import {
   CastCommitCall,
   CastVoteCall,
 } from "../../generated/KlerosLiquid/KlerosLiquid"
+import { Vote } from "../../generated/schema"
 import { 
   getDisputeObj,
+  getJurorObj,
   getOrCreateDispute,
   getOrCreateDisputeRound,
   getOrCreateJuror,
@@ -26,6 +28,7 @@ import {
   getOrCreateKlerosStat, 
   getOrCreateSubCourt, 
   getOrCreateVote, 
+  getVoteID, 
   i32ToPeriod, 
   i32ToPhase, 
   removeJurorStake, 
@@ -76,6 +79,10 @@ export function handleDraw(event: Draw): void {
   let voteID = event.params._voteID
   
   getOrCreateVote(disputeID, round, jurorAddress, voteID, event.address)
+
+  let juror = getOrCreateJuror(jurorAddress)
+  let jurorObj = getJurorObj(event.params._address, event.address)
+  juror.lockedToken = jurorObj.value1
 }
 
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {}
@@ -122,8 +129,24 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
     dispute.ruled = true
     dispute.save()
 
-    // TODO: update juror locked token
-    // let juror = getJurorObj()
+    // let jurorIDs: string[] = []
+
+    let latestRound = dispute.latestRound
+    for (let i = BigInt.fromI32(0); i < latestRound; i.plus(BigInt.fromI32(0))) {
+      let disputeRound = getOrCreateDisputeRound(disputeID, i, call.to)
+      let voteCount = disputeRound.voteCount
+      for (let j = BigInt.fromI32(0); j < voteCount; j.plus(BigInt.fromI32(0))) {
+        let voteID = getVoteID(disputeID, i, j.toString())
+        let vote = Vote.load(voteID)
+        if (vote != null) {
+          let jurorID = vote.juror
+          let juror = getOrCreateJuror(jurorID)
+          let jurorObj = getJurorObj(Address.fromString(juror.id.toString()), call.to)
+          juror.lockedToken = jurorObj.value1
+          juror.save()
+        }
+      }
+    }
   }
 }
 
