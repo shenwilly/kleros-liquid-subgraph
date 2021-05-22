@@ -55,6 +55,10 @@ dataSources:
           handler: handleChangeSubcourtJurorsForJump
         - function: changeSubcourtTimesPerPeriod(uint96,uint256[4])
           handler: handleChangeSubcourtTimesPerPeriod
+        - function: castCommit(uint256,uint256[],bytes32)
+          handler: handleCastCommit
+        - function: castVote(uint256,uint256[],uint256,uint256)
+          handler: handleCastVote
       file: ./src/mappings/klerosLiquid.ts
   - kind: ethereum/contract
     name: PolicyRegistry

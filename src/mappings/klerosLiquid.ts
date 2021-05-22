@@ -14,6 +14,8 @@ import {
   ChangeSubcourtJurorFeeCall,
   ChangeSubcourtJurorsForJumpCall,
   ChangeSubcourtTimesPerPeriodCall,
+  CastCommitCall,
+  CastVoteCall,
 } from "../../generated/KlerosLiquid/KlerosLiquid"
 import { 
   getDisputeObj,
@@ -147,4 +149,39 @@ export function handleChangeSubcourtTimesPerPeriod(call: ChangeSubcourtTimesPerP
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.timesPerPeriod = call.inputs._timesPerPeriod
+}
+
+export function handleCastCommit(call: CastCommitCall): void {
+  let disputeID = call.inputs._disputeID.toString()
+  let dispute = getOrCreateDispute(disputeID, call.to)
+  let latestRound = dispute.latestRound
+  let jurorAddress = call.from.toHexString()
+  let voteIDs = call.inputs._voteIDs
+  
+  for (let i = 0; i < voteIDs.length; i++) {
+    let voteID = voteIDs[i]
+    let vote = getOrCreateVote(disputeID, latestRound, jurorAddress, voteID, call.to)
+    vote.commit = call.inputs._commit
+    vote.save()
+  }
+}
+
+export function handleCastVote(call: CastVoteCall): void {
+  let disputeID = call.inputs._disputeID.toString()
+  let dispute = getOrCreateDispute(disputeID, call.to)
+  let latestRound = dispute.latestRound
+  let jurorAddress = call.from.toHexString()
+  let voteIDs = call.inputs._voteIDs
+  let choice = call.inputs._choice
+
+  // TODO: handle salt for hidden votes
+  // let salt = call.inputs._salt
+  
+  for (let i = 0; i < voteIDs.length; i++) {
+    let voteID = voteIDs[i]
+    let vote = getOrCreateVote(disputeID, latestRound, jurorAddress, voteID, call.to)
+    vote.choice = choice
+    vote.voted = true
+    vote.save()
+  }
 }

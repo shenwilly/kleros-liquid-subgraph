@@ -674,4 +674,47 @@ export class Vote extends Entity {
   set juror(value: string) {
     this.set("juror", Value.fromString(value));
   }
+
+  get voted(): boolean {
+    let value = this.get("voted");
+    return value.toBoolean();
+  }
+
+  set voted(value: boolean) {
+    this.set("voted", Value.fromBoolean(value));
+  }
+
+  get commit(): Bytes | null {
+    let value = this.get("commit");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set commit(value: Bytes | null) {
+    if (value === null) {
+      this.unset("commit");
+    } else {
+      this.set("commit", Value.fromBytes(value as Bytes));
+    }
+  }
+
+  get choice(): BigInt | null {
+    let value = this.get("choice");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set choice(value: BigInt | null) {
+    if (value === null) {
+      this.unset("choice");
+    } else {
+      this.set("choice", Value.fromBigInt(value as BigInt));
+    }
+  }
 }
