@@ -6,7 +6,7 @@ import {
 	KlerosLiquid__getSubcourtResult,
 	KlerosLiquid__jurorsResult
 } from "../generated/KlerosLiquid/KlerosLiquid"
-import { Arbitrable, Court, Dispute, Juror, JurorStake, KlerosStat, Policy } from "../generated/schema"
+import { Arbitrable, Court, Dispute, DisputeRound, Juror, JurorStake, KlerosStat, Policy } from "../generated/schema"
 
 export function getDisputeObj(disputeID: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
 	let contract = KlerosLiquid.bind(courtAddress)
@@ -94,6 +94,9 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 		dispute.drawsInRound = disputeObj.value5;
 		dispute.commitsInRound = disputeObj.value6;
 		dispute.ruled = disputeObj.value7;
+		dispute.save()
+
+		getOrCreateDisputeRound(disputeID, BigInt.fromI32(0), klerosAddress);
 
 		arbitrable.disputeCount = arbitrable.disputeCount.plus(BigInt.fromI32(1))
 		arbitrable.save()
@@ -106,8 +109,6 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 		let court = getOrCreateSubCourt(courtID, klerosAddress)
 		court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
 		court.save()
-
-		dispute.save()
 	}
 	return dispute!
 }
@@ -196,6 +197,20 @@ export function getOrCreateArbitrable(arbitrableID: string): Arbitrable {
 		klerosStat.save()
   	}
 	return arbitrable!
+}
+
+export function getOrCreateDisputeRound(disputeID: string, round: BigInt, klerosAddress: Address): DisputeRound {
+	let disputeRoundId = disputeID + '-' + round.toString()
+	let disputeRound = DisputeRound.load(disputeRoundId)
+	if (disputeRound == null) {
+		disputeRound = new DisputeRound(disputeRoundId)
+
+		let dispute = getOrCreateDispute(disputeID, klerosAddress)
+		disputeRound.dispute = dispute.id
+		disputeRound.round = round
+		disputeRound.save()
+ 	}
+	return disputeRound!
 }
   
 export function updateOrCreatePolicy(subcourtID: string, policy: string): Policy {
