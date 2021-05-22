@@ -336,6 +336,15 @@ export class Dispute extends Entity {
     this.set("ruled", Value.fromBoolean(value));
   }
 
+  get latestRound(): BigInt {
+    let value = this.get("latestRound");
+    return value.toBigInt();
+  }
+
+  set latestRound(value: BigInt) {
+    this.set("latestRound", Value.fromBigInt(value));
+  }
+
   get rounds(): Array<string> {
     let value = this.get("rounds");
     return value.toStringArray();

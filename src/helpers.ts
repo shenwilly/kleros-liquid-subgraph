@@ -94,9 +94,10 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 		dispute.drawsInRound = disputeObj.value5;
 		dispute.commitsInRound = disputeObj.value6;
 		dispute.ruled = disputeObj.value7;
+		dispute.latestRound = BigInt.fromI32(0)
 		dispute.save()
 
-		getOrCreateDisputeRound(disputeID, BigInt.fromI32(0), klerosAddress);
+		getOrCreateDisputeRound(disputeID, dispute.latestRound, klerosAddress);
 
 		arbitrable.disputeCount = arbitrable.disputeCount.plus(BigInt.fromI32(1))
 		arbitrable.save()

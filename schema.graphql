@@ -37,6 +37,7 @@ type Dispute @entity {
   commitsInRound: BigInt!
   ruled: Boolean!
 
+  latestRound: BigInt!
   rounds: [DisputeRound!] ! @derivedFrom(field: "dispute")
 }
 

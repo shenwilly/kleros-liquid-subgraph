@@ -18,6 +18,7 @@ import {
 import { 
   getDisputeObj,
   getOrCreateDispute,
+  getOrCreateDisputeRound,
   getOrCreateJuror,
   getOrCreateJurorStake,
   getOrCreateKlerosStat, 
@@ -80,11 +81,18 @@ export function handleAppealDecision(event: AppealDecision): void {
   let dispute = getOrCreateDispute(disputeID, event.address)
 
   let disputeObj = getDisputeObj(event.params._disputeID, event.address);
+
+  // handle court jump
+  let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), event.address)
+  dispute.subcourt = subcourt.id
+  
   dispute.lastPeriodChange = disputeObj.value4
   dispute.drawsInRound = disputeObj.value5;
   dispute.commitsInRound = disputeObj.value6;
-
+  dispute.latestRound = dispute.latestRound.plus(BigInt.fromI32(1))
   dispute.save()
+
+  getOrCreateDisputeRound(disputeID, dispute.latestRound, event.address);
 }
 
 export function handleCreateSubcourt(call: CreateSubcourtCall): void {
