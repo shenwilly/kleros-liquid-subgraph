@@ -23,7 +23,6 @@ type Court @entity {
   children: [Court!]!
 
   disputeCount: BigInt!
-  policy: String
 }
 
 type Dispute @entity {
@@ -53,6 +52,12 @@ type JurorStake @entity {
   juror: Juror!
   subcourt: Court!
   stakedToken: BigInt!
+}
+
+type Policy @entity {
+  id: ID!
+  subcourtID: BigInt!
+  policy: String!
 }
 
 type Arbitrable @entity {

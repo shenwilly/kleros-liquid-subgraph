@@ -232,23 +232,6 @@ export class Court extends Entity {
   set disputeCount(value: BigInt) {
     this.set("disputeCount", Value.fromBigInt(value));
   }
-
-  get policy(): string | null {
-    let value = this.get("policy");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set policy(value: string | null) {
-    if (value === null) {
-      this.unset("policy");
-    } else {
-      this.set("policy", Value.fromString(value as string));
-    }
-  }
 }
 
 export class Dispute extends Entity {
@@ -485,6 +468,55 @@ export class JurorStake extends Entity {
 
   set stakedToken(value: BigInt) {
     this.set("stakedToken", Value.fromBigInt(value));
+  }
+}
+
+export class Policy extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Policy entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Policy entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Policy", id.toString(), this);
+  }
+
+  static load(id: string): Policy | null {
+    return store.get("Policy", id) as Policy | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get subcourtID(): BigInt {
+    let value = this.get("subcourtID");
+    return value.toBigInt();
+  }
+
+  set subcourtID(value: BigInt) {
+    this.set("subcourtID", Value.fromBigInt(value));
+  }
+
+  get policy(): string {
+    let value = this.get("policy");
+    return value.toString();
+  }
+
+  set policy(value: string) {
+    this.set("policy", Value.fromString(value));
   }
 }
 
