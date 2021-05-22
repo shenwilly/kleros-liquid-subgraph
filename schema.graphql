@@ -27,7 +27,7 @@ type Court @entity {
 type Dispute @entity {
   id: ID!
   disputeID: BigInt!
-  arbitrable: Bytes! # address
+  arbitrable: Arbitrable! # address
 
   subcourt: Court!
   numberOfChoices: BigInt!

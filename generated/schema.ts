@@ -264,13 +264,13 @@ export class Dispute extends Entity {
     this.set("disputeID", Value.fromBigInt(value));
   }
 
-  get arbitrable(): Bytes {
+  get arbitrable(): string {
     let value = this.get("arbitrable");
-    return value.toBytes();
+    return value.toString();
   }
 
-  set arbitrable(value: Bytes) {
-    this.set("arbitrable", Value.fromBytes(value));
+  set arbitrable(value: string) {
+    this.set("arbitrable", Value.fromString(value));
   }
 
   get subcourt(): string {

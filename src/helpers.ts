@@ -84,13 +84,19 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 		let disputeObj = getDisputeObj(BigInt.fromString(disputeID), klerosAddress);
 		let subcourt = getOrCreateSubCourt(disputeObj.value0.toString(), klerosAddress)
 		dispute.subcourt = subcourt.id
-		dispute.arbitrable = disputeObj.value1
+
+		let arbitrable = getOrCreateArbitrable(disputeObj.value1.toHexString())
+		dispute.arbitrable = arbitrable.id
+		
 		dispute.numberOfChoices = disputeObj.value2
 		dispute.period = i32ToPeriod(disputeObj.value3)
 		dispute.lastPeriodChange = disputeObj.value4
 		dispute.drawsInRound = disputeObj.value5;
 		dispute.commitsInRound = disputeObj.value6;
 		dispute.ruled = disputeObj.value7;
+
+		arbitrable.disputeCount = arbitrable.disputeCount.plus(BigInt.fromI32(1))
+		arbitrable.save()
 
 		let klerosStat = getOrCreateKlerosStat()
 		klerosStat.disputeCount = klerosStat.disputeCount.plus(BigInt.fromI32(1))
@@ -100,11 +106,6 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 		let court = getOrCreateSubCourt(courtID, klerosAddress)
 		court.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
 		court.save()
-
-		let arbitrableID = dispute.arbitrable.toHexString()
-		let arbitrable = getOrCreateArbitrable(arbitrableID)
-		arbitrable.disputeCount = court.disputeCount.plus(BigInt.fromI32(1))
-		arbitrable.save()
 
 		dispute.save()
 	}
