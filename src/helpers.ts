@@ -213,6 +213,7 @@ export function getOrCreateDisputeRound(disputeID: string, round: BigInt, kleros
 		let dispute = getOrCreateDispute(disputeID, klerosAddress)
 		disputeRound.dispute = dispute.id
 		disputeRound.round = round
+		disputeRound.voteCount = BigInt.fromI32(0)
 		disputeRound.save()
  	}
 	return disputeRound!
@@ -232,9 +233,11 @@ export function getOrCreateVote(disputeID: string, round: BigInt, jurorID: strin
 		let juror = getOrCreateJuror(jurorID)
 		voteEntity.juror = juror.id
 
-		voteEntity.voted = false
-		
+		voteEntity.voted = false		
 		voteEntity.save()
+
+		disputeRound.voteCount = disputeRound.voteCount.plus(BigInt.fromI32(1))
+		disputeRound.save()
  	}
 	return voteEntity!
 }

@@ -617,6 +617,15 @@ export class DisputeRound extends Entity {
     this.set("round", Value.fromBigInt(value));
   }
 
+  get voteCount(): BigInt {
+    let value = this.get("voteCount");
+    return value.toBigInt();
+  }
+
+  set voteCount(value: BigInt) {
+    this.set("voteCount", Value.fromBigInt(value));
+  }
+
   get votes(): Array<string> {
     let value = this.get("votes");
     return value.toStringArray();
