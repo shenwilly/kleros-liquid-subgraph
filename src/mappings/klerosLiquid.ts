@@ -23,6 +23,7 @@ import {
   getOrCreateJurorStake,
   getOrCreateKlerosStat, 
   getOrCreateSubCourt, 
+  getOrCreateVote, 
   i32ToPeriod, 
   i32ToPhase, 
   removeJurorStake, 
@@ -66,7 +67,14 @@ export function handleStakeSet(event: StakeSet): void {
   updateJurorStat(juror)
 }
 
-export function handleDraw(event: Draw): void {}
+export function handleDraw(event: Draw): void {
+  let jurorAddress = event.params._address.toHexString()
+  let disputeID = event.params._disputeID.toString()
+  let round = event.params._appeal
+  let voteID = event.params._voteID
+  
+  getOrCreateVote(disputeID, round, jurorAddress, voteID, event.address)
+}
 
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {}
 

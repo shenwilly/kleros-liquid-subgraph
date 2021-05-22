@@ -6,7 +6,7 @@ import {
 	KlerosLiquid__getSubcourtResult,
 	KlerosLiquid__jurorsResult
 } from "../generated/KlerosLiquid/KlerosLiquid"
-import { Arbitrable, Court, Dispute, DisputeRound, Juror, JurorStake, KlerosStat, Policy } from "../generated/schema"
+import { Arbitrable, Court, Dispute, DisputeRound, Juror, JurorStake, KlerosStat, Policy, Vote } from "../generated/schema"
 
 export function getDisputeObj(disputeID: BigInt, courtAddress: Address): KlerosLiquid__disputesResult {
 	let contract = KlerosLiquid.bind(courtAddress)
@@ -133,6 +133,10 @@ export function getOrCreateJuror(jurorID: string): Juror {
 export function getJurorStakeID(jurorID: string, courtID: string): string {
 	return jurorID + '-' + courtID;
 }
+
+export function getDisputeRoundID(disputeID: string, round: BigInt): string {
+	return disputeID + '-' + round.toString()
+}
   
 export function getOrCreateJurorStake(juror: Juror, court: Court): JurorStake {
 	let jurorStakeID = getJurorStakeID(juror.id, court.id)
@@ -201,7 +205,7 @@ export function getOrCreateArbitrable(arbitrableID: string): Arbitrable {
 }
 
 export function getOrCreateDisputeRound(disputeID: string, round: BigInt, klerosAddress: Address): DisputeRound {
-	let disputeRoundId = disputeID + '-' + round.toString()
+	let disputeRoundId = getDisputeRoundID(disputeID, round)
 	let disputeRound = DisputeRound.load(disputeRoundId)
 	if (disputeRound == null) {
 		disputeRound = new DisputeRound(disputeRoundId)
@@ -212,6 +216,25 @@ export function getOrCreateDisputeRound(disputeID: string, round: BigInt, kleros
 		disputeRound.save()
  	}
 	return disputeRound!
+}
+
+export function getOrCreateVote(disputeID: string, round: BigInt, jurorID: string, vote: BigInt, klerosAddress: Address): Vote {
+	let disputeRoundId = getDisputeRoundID(disputeID, round)
+	let voteID = disputeRoundId + '-' + vote.toString()
+
+	let voteEntity = Vote.load(voteID)
+	if (voteEntity == null) {
+		voteEntity = new Vote(voteID)
+
+		let disputeRound = getOrCreateDisputeRound(disputeID, round, klerosAddress)
+		voteEntity.disputeRound = disputeRound.id
+
+		let juror = getOrCreateJuror(jurorID)
+		voteEntity.juror = juror.id
+		
+		voteEntity.save()
+ 	}
+	return voteEntity!
 }
   
 export function updateOrCreatePolicy(subcourtID: string, policy: string): Policy {
