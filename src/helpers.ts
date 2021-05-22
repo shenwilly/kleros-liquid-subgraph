@@ -34,6 +34,7 @@ export function getOrCreateKlerosStat(): KlerosStat {
 		klerosStat = new KlerosStat('ID')
 		klerosStat.courtCount = BigInt.fromI32(1) //discount general court #0
 		klerosStat.disputeCount = BigInt.fromI32(0)
+		klerosStat.activeDisputeCount = BigInt.fromI32(0)
 		klerosStat.uniqueJurorCount = BigInt.fromI32(0)
 		klerosStat.uniqueArbitrableCount = BigInt.fromI32(0)
 		klerosStat.save()
@@ -104,6 +105,7 @@ export function getOrCreateDispute(disputeID: string, klerosAddress: Address): D
 
 		let klerosStat = getOrCreateKlerosStat()
 		klerosStat.disputeCount = klerosStat.disputeCount.plus(BigInt.fromI32(1))
+		klerosStat.activeDisputeCount = klerosStat.activeDisputeCount.plus(BigInt.fromI32(1))
 		klerosStat.save()
 
 		let courtID = dispute.subcourt

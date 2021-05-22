@@ -128,6 +128,10 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
   if (dispute.period == 'Execution') {
     dispute.ruled = true
     dispute.save()
+    
+		let klerosStat = getOrCreateKlerosStat()
+		klerosStat.activeDisputeCount = klerosStat.activeDisputeCount.minus(BigInt.fromI32(1))
+		klerosStat.save()
 
     let latestRound = dispute.latestRound
     for (let i = 0; i < latestRound.toI32(); i++) {

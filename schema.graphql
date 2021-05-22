@@ -2,6 +2,7 @@ type KlerosStat @entity {
   id: ID!
   courtCount: BigInt!
   disputeCount: BigInt!
+  activeDisputeCount: BigInt!
   uniqueJurorCount: BigInt!
   uniqueArbitrableCount: BigInt!
   phase: Phase
