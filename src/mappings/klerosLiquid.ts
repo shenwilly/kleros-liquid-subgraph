@@ -10,6 +10,7 @@ import {
   AppealDecision,
   CreateSubcourtCall,
   ExecuteRulingCall,
+  ChangeSubcourtMinStakeCall,
   ChangeSubcourtAlphaCall,
   ChangeSubcourtJurorFeeCall,
   ChangeSubcourtJurorsForJumpCall,
@@ -150,6 +151,13 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
       }
     }
   }
+}
+
+export function handleChangeSubcourtMinStake(call: ChangeSubcourtMinStakeCall): void {
+  // TODO: validate input
+  let subcourtID = call.inputs._subcourtID.toString()
+  let subcourt = getOrCreateSubCourt(subcourtID, call.to)
+  subcourt.minStake = call.inputs._minStake
 }
 
 export function handleChangeSubcourtAlpha(call: ChangeSubcourtAlphaCall): void {
