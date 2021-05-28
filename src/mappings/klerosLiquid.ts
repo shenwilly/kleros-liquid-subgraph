@@ -158,30 +158,35 @@ export function handleChangeSubcourtMinStake(call: ChangeSubcourtMinStakeCall): 
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.minStake = call.inputs._minStake
+  subcourt.save()
 }
 
 export function handleChangeSubcourtAlpha(call: ChangeSubcourtAlphaCall): void {
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.alpha = call.inputs._alpha
+  subcourt.save()
 }
 
 export function handleChangeSubcourtJurorFee(call: ChangeSubcourtJurorFeeCall): void {
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.feeForJuror = call.inputs._feeForJuror
+  subcourt.save()
 }
 
 export function handleChangeSubcourtJurorsForJump(call: ChangeSubcourtJurorsForJumpCall): void {
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.jurorsForCourtJump = call.inputs._jurorsForCourtJump
+  subcourt.save()
 }
 
 export function handleChangeSubcourtTimesPerPeriod(call: ChangeSubcourtTimesPerPeriodCall): void {
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.timesPerPeriod = call.inputs._timesPerPeriod
+  subcourt.save()
 }
 
 export function handleCastCommit(call: CastCommitCall): void {
