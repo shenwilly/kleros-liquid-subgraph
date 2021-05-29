@@ -74,8 +74,11 @@ type DisputeRound @entity {
   round: BigInt!
   voteCount: BigInt!
 
+  winningChoice: BigInt
+  tied: Boolean!
+  castedVoteCounts: [BigInt!]!
+
   votes: [Vote!] ! @derivedFrom(field: "disputeRound")
-  # TODO: vote count, tied, winner
 }
 
 type Vote @entity {

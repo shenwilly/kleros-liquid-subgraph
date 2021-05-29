@@ -1,4 +1,4 @@
-import { Address, BigInt, store } from "@graphprotocol/graph-ts"
+import { Address, BigInt, store, log } from "@graphprotocol/graph-ts"
 import { 
 	KlerosLiquid, 
 	KlerosLiquid__courtsResult, 
@@ -221,6 +221,20 @@ export function getOrCreateDisputeRound(disputeID: string, round: BigInt, kleros
 		disputeRound.dispute = dispute.id
 		disputeRound.round = round
 		disputeRound.voteCount = BigInt.fromI32(0)
+		disputeRound.tied = false
+		
+		let choices: i32;
+		if (dispute.numberOfChoices.isI32()) {
+			choices = dispute.numberOfChoices.toI32()
+		} else {
+			choices = 2 // handle max int
+		}
+
+		let voteCounts = new Array<BigInt>();
+		for (let i = 0; i <= choices; i++) {
+			voteCounts.push(BigInt.fromI32(0))
+		}
+		disputeRound.castedVoteCounts = voteCounts;
 		disputeRound.save()
  	}
 	return disputeRound!

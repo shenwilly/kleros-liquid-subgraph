@@ -635,6 +635,41 @@ export class DisputeRound extends Entity {
     this.set("voteCount", Value.fromBigInt(value));
   }
 
+  get winningChoice(): BigInt | null {
+    let value = this.get("winningChoice");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set winningChoice(value: BigInt | null) {
+    if (value === null) {
+      this.unset("winningChoice");
+    } else {
+      this.set("winningChoice", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get tied(): boolean {
+    let value = this.get("tied");
+    return value.toBoolean();
+  }
+
+  set tied(value: boolean) {
+    this.set("tied", Value.fromBoolean(value));
+  }
+
+  get castedVoteCounts(): Array<BigInt> {
+    let value = this.get("castedVoteCounts");
+    return value.toBigIntArray();
+  }
+
+  set castedVoteCounts(value: Array<BigInt>) {
+    this.set("castedVoteCounts", Value.fromBigIntArray(value));
+  }
+
   get votes(): Array<string> {
     let value = this.get("votes");
     return value.toStringArray();

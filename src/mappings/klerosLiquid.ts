@@ -214,6 +214,7 @@ export function handleCastVote(call: CastVoteCall): void {
 
   // TODO: handle salt for hidden votes
   // let salt = call.inputs._salt
+
   
   for (let i = 0; i < voteIDs.length; i++) {
     let voteID = voteIDs[i]
@@ -221,5 +222,31 @@ export function handleCastVote(call: CastVoteCall): void {
     vote.choice = choice
     vote.voted = true
     vote.save()
+
+    let disputeRound = getOrCreateDisputeRound(disputeID, latestRound, call.to)
+    let newVoteCounts = disputeRound.castedVoteCounts
+    newVoteCounts[choice.toI32()] = newVoteCounts[choice.toI32()].plus(BigInt.fromI32(1))
+    disputeRound.castedVoteCounts = newVoteCounts
+
+    let winningChoice = disputeRound.winningChoice;
+    if (winningChoice == null) {
+      disputeRound.winningChoice = vote.choice
+    } else {
+      if (winningChoice == choice) {
+        if (disputeRound.tied) 
+          disputeRound.tied = false
+      } else {
+        if (newVoteCounts[choice.toI32()] == newVoteCounts[winningChoice.toI32()]) {
+          if (!disputeRound.tied) 
+            disputeRound.tied = true
+        } else {
+          if (newVoteCounts[choice.toI32()] > newVoteCounts[winningChoice.toI32()]) {
+            disputeRound.winningChoice = choice
+            disputeRound.tied = false
+          }
+        }
+      }
+    }
+    disputeRound.save()
   }
 }
