@@ -61,12 +61,12 @@ export function handleStakeSet(event: StakeSet): void {
   let subcourt = getOrCreateSubCourt(event.params._subcourtID.toString(), event.address)
 
   let jurorStake = getOrCreateJurorStake(juror, subcourt)
-  let newTotalStake = event.params._newTotalStake
+  let stake = event.params._stake
 
-  if (newTotalStake == BigInt.fromI32(0)) {
+  if (stake == BigInt.fromI32(0)) {
     removeJurorStake(juror, subcourt)
   } else {
-    jurorStake.stakedToken = event.params._newTotalStake
+    jurorStake.stakedToken = stake
     jurorStake.save()
   }
 
@@ -84,6 +84,7 @@ export function handleDraw(event: Draw): void {
   let juror = getOrCreateJuror(jurorAddress)
   let jurorObj = getJurorObj(event.params._address, event.address)
   juror.lockedToken = jurorObj.value1
+  juror.save()
 }
 
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {}
@@ -154,7 +155,6 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
 }
 
 export function handleChangeSubcourtMinStake(call: ChangeSubcourtMinStakeCall): void {
-  // TODO: validate input
   let subcourtID = call.inputs._subcourtID.toString()
   let subcourt = getOrCreateSubCourt(subcourtID, call.to)
   subcourt.minStake = call.inputs._minStake
@@ -211,10 +211,6 @@ export function handleCastVote(call: CastVoteCall): void {
   let jurorAddress = call.from.toHexString()
   let voteIDs = call.inputs._voteIDs
   let choice = call.inputs._choice
-
-  // TODO: handle salt for hidden votes
-  // let salt = call.inputs._salt
-
   
   for (let i = 0; i < voteIDs.length; i++) {
     let voteID = voteIDs[i]
