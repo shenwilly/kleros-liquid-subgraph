@@ -122,7 +122,7 @@ export function getOrCreateJuror(jurorID: string): Juror {
 		juror = new Juror(jurorID)
 		juror.subCourts = []
 		juror.stakedToken = BigInt.fromI32(0)
-		juror.lockedToken = BigInt.fromI32(0)
+		// juror.lockedToken = BigInt.fromI32(0)
 		juror.save()
 
 		let klerosStat = getOrCreateKlerosStat()

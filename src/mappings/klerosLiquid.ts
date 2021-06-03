@@ -81,10 +81,10 @@ export function handleDraw(event: Draw): void {
   
   getOrCreateVote(disputeID, round, jurorAddress, voteID, event.address)
 
-  let juror = getOrCreateJuror(jurorAddress)
-  let jurorObj = getJurorObj(event.params._address, event.address)
-  juror.lockedToken = jurorObj.value1
-  juror.save()
+  // let juror = getOrCreateJuror(jurorAddress)
+  // let jurorObj = getJurorObj(event.params._address, event.address)
+  // juror.lockedToken = jurorObj.value1
+  // juror.save()
 }
 
 export function handleTokenAndETHShift(event: TokenAndETHShift): void {}
@@ -145,8 +145,8 @@ export function handleExecuteRuling(call: ExecuteRulingCall): void {
         if (vote != null) {
           let jurorID = vote.juror
           let juror = getOrCreateJuror(jurorID)
-          let jurorObj = getJurorObj(Address.fromString(juror.id.toString()), call.to)
-          juror.lockedToken = jurorObj.value1
+          // let jurorObj = getJurorObj(Address.fromString(juror.id.toString()), call.to)
+          // juror.lockedToken = jurorObj.value1
           juror.save()
         }
       }

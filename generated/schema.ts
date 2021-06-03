@@ -412,15 +412,6 @@ export class Juror extends Entity {
     this.set("stakedToken", Value.fromBigInt(value));
   }
 
-  get lockedToken(): BigInt {
-    let value = this.get("lockedToken");
-    return value.toBigInt();
-  }
-
-  set lockedToken(value: BigInt) {
-    this.set("lockedToken", Value.fromBigInt(value));
-  }
-
   get jurorStakes(): Array<string> {
     let value = this.get("jurorStakes");
     return value.toStringArray();
